@@ -7,3 +7,11 @@ face_data/
 *.backup_*
 ID PROOF.jpeg
 ~$*
+
+# Private credentials
+secrets/
+
+# Python virtual environment
+.venv/
+venv/
+
