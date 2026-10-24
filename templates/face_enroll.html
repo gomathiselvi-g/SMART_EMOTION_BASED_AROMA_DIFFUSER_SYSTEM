@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Face Enrollment | Smart Aroma</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#f5f2ff,#ece7ff);color:#292344}.card{width:min(100%,680px);background:white;padding:28px;border-radius:22px;box-shadow:0 15px 45px #43307818}h1{text-align:center;margin:8px 0}.sub{color:#77718c;line-height:1.55;text-align:center}.camera{width:100%;border-radius:14px;overflow:hidden;background:#191525;border:1px solid #e4def5;margin-top:20px}.camera img{display:block;width:100%;height:auto;min-height:260px;object-fit:contain}.pose{background:#f7f4ff;border:1px solid #e5ddff;border-radius:12px;padding:15px;margin-top:15px}.progress{height:8px;background:#eee8ff;border-radius:20px;overflow:hidden;margin-top:10px}.bar{height:100%;width:0;background:#7554d7;transition:width .2s}label{display:flex;align-items:flex-start;gap:10px;margin-top:17px;font-size:14px;line-height:1.5}.consent{accent-color:#7554d7;margin-top:3px;flex-shrink:0}button{width:100%;padding:14px;margin-top:16px;border:0;border-radius:11px;background:#7554d7;color:white;font-weight:700;cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}#message{min-height:34px;line-height:1.5;color:#55486f;font-size:14px}.privacy{margin-top:14px;background:#f7f4ff;border-radius:11px;padding:12px;font-size:12px;line-height:1.55;color:#6f6884}.small{font-size:12px;color:#77718c}
+</style>
+</head>
+<body><main class="card">
+<div style="text-align:center;font-size:38px">🌿</div><h1>Register your face</h1>
+<p class="sub">This version uses a face-embedding model (SFace) and a neural face detector (YuNet). Capture each angle when prompted. Keep only you in frame, with good light.</p>
+<div class="camera"><img src="{{ url_for('enrollment_feed') }}" alt="Clean live camera preview"></div>
+<div class="pose"><strong id="poseTitle">Sample 1 of 6 · Front</strong><p id="poseHelp">Look straight at the camera. Keep your face fully visible.</p><div class="progress"><div class="bar" id="bar"></div></div><p class="small" id="counter">0 of 6 samples captured</p></div>
+<label><input class="consent" id="consent" type="checkbox"><span>I consent to creating and storing a face embedding locally for identity matching, continuous camera matching while this app runs, and recording / spray only when my registered face is matched and monitoring is enabled.</span></label>
+<button id="capture">Capture sample 1/6</button>
+<p id="message" role="status">The page uses a clean raw preview. Capture one sample for each prompt.</p>
+<div class="privacy">Samples are captured from the local camera. The app stores numeric face embeddings, not the captured enrollment images. Do not enroll the same person's face under multiple accounts. Face recognition is a demo, can fail at extreme angles, and is not spoof-proof.</div>
+</main>
+<script>
+const prompts=[
+ {tag:'front',title:'Sample 1 of 6 · Front',help:'Look straight at the camera. Keep your full face visible.'},
+ {tag:'left',title:'Sample 2 of 6 · Turn left',help:'Turn your head about 20–35° to your LEFT; do not turn your back.'},
+ {tag:'right',title:'Sample 3 of 6 · Turn right',help:'Turn your head about 20–35° to your RIGHT; keep both eyes as visible as comfortable.'},
+ {tag:'down',title:'Sample 4 of 6 · Slightly down',help:'Return to front, then tilt your chin slightly down.'},
+ {tag:'up',title:'Sample 5 of 6 · Slightly up',help:'Return to front, then tilt your chin slightly up.'},
+ {tag:'front2',title:'Sample 6 of 6 · Front again',help:'Return to your normal position, with a relaxed expression.'}
+];
+const button=document.getElementById('capture'),msg=document.getElementById('message'),consent=document.getElementById('consent');
+const poseTitle=document.getElementById('poseTitle'),poseHelp=document.getElementById('poseHelp'),bar=document.getElementById('bar'),counter=document.getElementById('counter');
+const images=[],poses=[];let index=0,lastSeq=-1,busy=false;
+function update(){ if(index<prompts.length){poseTitle.textContent=prompts[index].title;poseHelp.textContent=prompts[index].help;button.textContent=`Capture sample ${index+1}/6`;counter.textContent=`${images.length} of 6 samples captured`;bar.style.width=`${images.length/6*100}%`;}else{poseTitle.textContent='All six angles captured';poseHelp.textContent='Now create your face profile from these angle samples.';button.textContent='Register face profile';counter.textContent='6 of 6 samples captured';bar.style.width='100%';}}
+button.addEventListener('click',async()=>{
+ if(busy)return;
+ if(!consent.checked){msg.textContent='Please check the consent box before enrollment.';return;}
+ busy=true;button.disabled=true;
+ try{
+  if(index<prompts.length){
+   msg.textContent='Capturing a fresh camera frame. Keep the prompted pose steady…';
+   const response=await fetch('/api/camera/snapshot?after_seq='+lastSeq,{cache:'no-store'});
+   const data=await response.json();
+   if(!response.ok)throw new Error(data.error||'Camera sample failed.');
+   images.push(data.image);poses.push(prompts[index].tag);lastSeq=data.sequence;index++;
+   update();msg.textContent='Sample captured. Follow the next pose prompt and click again.';
+  }else{
+   msg.textContent='Creating your multi-angle face profile…';
+   const response=await fetch('/api/face/enroll',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images,poses,monitoringConsent:true})});
+   const data=await response.json();
+   if(!response.ok||!data.ok)throw new Error(data.message||'Face enrollment failed.');
+   msg.textContent=data.message||'Face enrolled. Redirecting to verification…';
+   window.location.href=data.next||'/face-verify';return;
+  }
+ }catch(error){msg.textContent=error.message||'Enrollment failed. Retry with better lighting.';}
+ finally{busy=false;button.disabled=false;update();}
+});
+update();
+</script></body></html>

@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Aroma | AI Wellness</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+    :root{--bg:#f7f7fc;--surface:#fff;--surface-soft:#f5f2ff;--ink:#24213a;--muted:#85839b;--line:#eceaf4;--purple:#7655d9;--purple-dark:#5a3cba;--purple-pale:#eee9ff;--green:#17866b;--green-pale:#e4f7ef;--shadow:0 10px 30px rgba(53,37,99,.06);--sidebar:258px}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+    button{font:inherit;cursor:pointer}
+    .app-shell{min-height:100vh}
+    .sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:25px 16px 18px;z-index:20}
+    .brand{display:flex;align-items:center;gap:12px;padding:2px 10px 26px}
+    .brand-mark{height:43px;width:43px;border-radius:15px;background:linear-gradient(145deg,#8f73ef,#6546cb);display:grid;place-items:center;color:#fff;font-size:22px;box-shadow:0 8px 18px #7655d933}
+    .brand-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;letter-spacing:-.45px}.brand-sub{font-size:11px;color:var(--muted);margin-top:3px}
+    .workspace-label{padding:0 13px 10px;color:#aaa7bc;font-size:10px;letter-spacing:1.4px;font-weight:700;text-transform:uppercase}
+    .nav-list{list-style:none;display:flex;flex:1;min-height:0;flex-direction:column;gap:5px;overflow-y:auto;overscroll-behavior:contain;padding:0 0 12px;scrollbar-width:thin;scrollbar-color:#d8d0f5 transparent}
+    .nav-link{width:100%;display:flex;align-items:center;gap:13px;padding:12px 13px;border:0;background:transparent;color:#77748d;border-radius:12px;text-align:left;font-size:13px;font-weight:600;transition:background .2s,color .2s}
+    .nav-link:hover{background:#f8f6ff;color:var(--purple-dark)}.nav-link.active{background:var(--purple-pale);color:var(--purple-dark)}
+    .nav-icon{width:23px;text-align:center;font-size:17px;flex-shrink:0}.nav-caption{font-size:10px;color:#b1adbf;padding:18px 13px 9px;letter-spacing:1.1px;font-weight:700;text-transform:uppercase}
+    .sidebar-bottom{margin-top:auto;padding-top:13px;border-top:1px solid var(--line)}
+    .help-card{background:linear-gradient(145deg,#f2edff,#faf8ff);border:1px solid #ece5ff;border-radius:15px;padding:14px;margin:0 2px 12px}.help-card .help-icon{font-size:20px}.help-card h4{font-size:12px;margin:8px 0 5px}.help-card p{font-size:11px;line-height:1.55;color:var(--muted)}
+    .profile-mini{display:flex;gap:10px;align-items:center;padding:10px 8px 0}.avatar{width:36px;height:36px;flex-shrink:0;border-radius:12px;background:#e9e1ff;color:#6949c8;display:grid;place-items:center;font-weight:800}.profile-name{font-size:12px;font-weight:700}.profile-role{font-size:10px;color:var(--muted);margin-top:3px}
+    .main-area{margin-left:var(--sidebar);min-height:100vh;padding:0 34px 42px;max-width:1800px}
+    .topbar{height:86px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);margin-bottom:27px}
+    .breadcrumbs{font-size:11px;color:var(--muted);margin-bottom:5px}.topbar h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;letter-spacing:-.6px}.topbar-right{display:flex;align-items:center;gap:13px}.date-pill{background:#fff;border:1px solid var(--line);color:#706d84;border-radius:11px;padding:10px 13px;font-size:12px}.bell-btn{width:39px;height:39px;border-radius:12px;border:1px solid var(--line);background:#fff;position:relative;color:#6c6883}.bell-dot{position:absolute;top:7px;right:8px;width:6px;height:6px;background:#ef718b;border-radius:50%}
+    .page{display:none;animation:fadeUp .22s ease}.page.active{display:block}@keyframes fadeUp{from{opacity:.55;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    .welcome-banner{position:relative;overflow:hidden;background:linear-gradient(115deg,#6b4dc6 0%,#8066df 65%,#9b85ec 100%);color:#fff;border-radius:20px;padding:25px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:22px;box-shadow:0 13px 30px #7454d922}
+    .welcome-banner:after{content:'✺';position:absolute;right:17%;top:-48px;font-size:180px;color:#ffffff12;line-height:1}.welcome-content{position:relative;z-index:1}.eyebrow{font-size:11px;letter-spacing:1.25px;text-transform:uppercase;color:#dfd6ff;font-weight:700;margin-bottom:10px}.welcome-banner h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:23px;letter-spacing:-.6px;margin-bottom:8px}.welcome-banner p{font-size:12px;color:#ede8ff;line-height:1.6;max-width:510px}.banner-action{position:relative;z-index:1;background:#fff;color:var(--purple-dark);border:0;padding:12px 15px;border-radius:11px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 6px 18px #30206430}.banner-action:hover{transform:translateY(-1px)}
+    .section-heading{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:25px 0 14px}.section-heading h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;letter-spacing:-.25px}.section-heading p{font-size:11px;color:var(--muted);margin-top:5px}.text-link{border:0;background:transparent;color:var(--purple-dark);font-weight:700;font-size:11px}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:22px}.stat-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:17px 17px 16px;box-shadow:var(--shadow);min-width:0}.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.stat-label{color:var(--muted);font-size:11px;font-weight:600}.stat-icon{width:35px;height:35px;border-radius:12px;background:var(--surface-soft);display:grid;place-items:center;font-size:16px}.stat-value{font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:800;margin:14px 0 5px;letter-spacing:-.6px;overflow-wrap:anywhere}.stat-note{font-size:10px;color:var(--muted)}.stat-note.good{color:var(--green)}
+    .content-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(270px,.9fr);gap:18px;align-items:stretch}.card{background:var(--surface);border:1px solid var(--line);border-radius:17px;padding:19px;box-shadow:var(--shadow);min-width:0}.card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.card-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;letter-spacing:-.25px}.card-subtitle{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5}.tiny-tag{background:var(--green-pale);color:var(--green);border-radius:30px;padding:6px 9px;font-size:10px;font-weight:700;white-space:nowrap}.tiny-tag.purple{background:var(--purple-pale);color:var(--purple-dark)}
+    .camera-frame{background:#191725;border-radius:13px;overflow:hidden;min-height:245px;display:flex;align-items:center;justify-content:center;position:relative}.camera-frame img{display:block;width:100%;max-height:390px;object-fit:contain;min-height:245px}.camera-overlay{position:absolute;left:12px;top:12px;background:#171426bc;color:#fff;font-size:10px;padding:7px 9px;border-radius:8px;display:flex;align-items:center;gap:7px}.pulse{height:7px;width:7px;border-radius:50%;background:#42d9a0;box-shadow:0 0 0 4px #42d9a022}.camera-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;color:var(--muted);font-size:10px}.soft-button{border:1px solid #e7e0ff;border-radius:9px;background:#f7f4ff;color:var(--purple-dark);padding:9px 11px;font-size:11px;font-weight:700}.soft-button:hover{background:var(--purple-pale)}
+    .emotion-hero{background:linear-gradient(135deg,#f5f1ff,#fbfaff);border:1px solid #ece6ff;border-radius:14px;padding:17px;margin-bottom:13px}.emotion-kicker{font-size:10px;color:#8c83ac;font-weight:700;letter-spacing:1px}.emotion-big{font-family:'Plus Jakarta Sans',sans-serif;font-size:27px;font-weight:800;color:#6346bf;margin:9px 0 5px}.emotion-helper{font-size:11px;color:var(--muted);line-height:1.5}.recommend-row{display:flex;align-items:flex-start;gap:11px;padding:13px 0;border-bottom:1px solid #f1eff7}.recommend-row:last-child{border-bottom:0;padding-bottom:0}.recommend-icon{width:36px;height:36px;display:grid;place-items:center;background:#f6f3ff;border-radius:11px;font-size:17px;flex-shrink:0}.recommend-label{font-size:10px;color:var(--muted);margin-bottom:4px}.recommend-value{font-size:12px;font-weight:700;line-height:1.55;overflow-wrap:anywhere}
+    .period-tabs{display:flex;gap:6px;flex-wrap:wrap}.period-tabs button{border:1px solid var(--line);background:#fff;color:#77738b;border-radius:9px;padding:8px 11px;font-size:10px;font-weight:700}.period-tabs button.active,.period-tabs button:hover{background:var(--purple-pale);border-color:#e2d9ff;color:var(--purple-dark)}.analytics-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:16px 0 22px}.analytics-stat{background:#faf9fe;border:1px solid #f0edf8;padding:14px;border-radius:12px}.analytics-stat .value{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800}.analytics-stat .label{color:var(--muted);font-size:10px;margin-top:5px;line-height:1.4}.bars{display:flex;flex-direction:column;gap:13px}.chart-row{display:grid;grid-template-columns:80px minmax(40px,1fr) 32px;align-items:center;gap:12px}.chart-label{font-size:11px;font-weight:600;color:#65617a}.bar-background{height:9px;background:#f0eef7;border-radius:20px;overflow:hidden}.bar{height:100%;width:0%;background:linear-gradient(90deg,#9e88f1,#7454d7);border-radius:20px;transition:width .45s}.count{text-align:right;font-size:11px;font-weight:700;color:#5e5972}.history-card{margin-top:18px}.table-wrap{width:100%;overflow-x:auto}.history-table{width:100%;border-collapse:collapse;min-width:600px}.history-table th{text-align:left;background:#faf9fe;color:#89849d;font-size:10px;font-weight:700;padding:12px;border-bottom:1px solid var(--line)}.history-table td{font-size:11px;color:#5e5a72;padding:13px 12px;border-bottom:1px solid #f1eff7;vertical-align:top;line-height:1.5}.history-table tbody tr:hover{background:#fcfbff}.emotion-pill{display:inline-flex;padding:5px 8px;border-radius:20px;background:#f0eaff;color:#6d4bc8;font-size:10px;font-weight:700}.empty-state{text-align:center;color:var(--muted);font-size:12px;padding:24px}
+    .wellness-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.wellness-card{border:1px solid var(--line);background:#fff;border-radius:16px;padding:19px;box-shadow:var(--shadow)}.wellness-card .feature-icon{height:43px;width:43px;border-radius:14px;background:var(--surface-soft);display:grid;place-items:center;font-size:21px;margin-bottom:15px}.wellness-card h3{font-size:13px;margin-bottom:7px}.wellness-card p{font-size:11px;color:var(--muted);line-height:1.65}.wellness-card .wellness-tag{display:inline-block;margin-top:14px;padding:6px 9px;border-radius:9px;font-size:10px;font-weight:700;background:#f3efff;color:var(--purple-dark)}.breathing-controls{margin-top:14px;padding:14px 10px;background:#faf8ff;border:1px solid #eee8ff;border-radius:13px;text-align:center}.breathing-orb{width:42px;height:42px;margin:0 auto 10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c9baff,#8061df);box-shadow:0 0 0 8px #eee8ff;transform:scale(.8);transition:transform 4s ease-in-out}.breathing-orb.inhale{transform:scale(1.16)}.breathing-orb.exhale{transform:scale(.78)}.breathing-status{font-weight:800;font-size:12px;color:var(--purple-dark);min-height:18px}.breathing-time{font-size:10px;color:var(--muted);margin:5px 0 10px}.breathing-controls button{width:100%}.note-card{background:#f7f3ff;border:1px solid #ebe3ff;border-radius:15px;padding:17px;margin-top:17px;font-size:11px;line-height:1.7;color:#6e648e}
+    .placeholder-card{padding:35px 25px;text-align:center;max-width:760px;margin:auto}.placeholder-icon{width:65px;height:65px;margin:0 auto 16px;border-radius:21px;display:grid;place-items:center;background:var(--purple-pale);font-size:29px}.placeholder-card h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;margin-bottom:9px}.placeholder-card p{font-size:12px;color:var(--muted);line-height:1.8;max-width:500px;margin:0 auto 18px}.status-line{display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid var(--line);padding:14px 0;font-size:12px}.status-line:last-child{border-bottom:0}.status-value{color:var(--green);font-weight:700}
+    .mobile-nav{display:none}.toast{position:fixed;right:22px;bottom:22px;background:#2c2446;color:#fff;padding:12px 16px;border-radius:12px;font-size:12px;box-shadow:var(--shadow);z-index:100;display:none;max-width:calc(100vw - 32px)}.toast.show{display:block;animation:fadeUp .2s ease}
+    @media(max-width:1150px){:root{--sidebar:230px}.main-area{padding:0 23px 35px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wellness-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-grid{grid-template-columns:minmax(0,1.2fr) minmax(250px,.8fr)}}
+    .nav-count{margin-left:auto;min-width:20px;height:20px;padding:0 5px;border-radius:999px;display:inline-grid;place-items:center;background:#7655d9;color:#fff;font-size:10px;font-weight:800}.notification-list,.recording-list{display:grid;gap:12px}.notification-card{display:flex;gap:13px;align-items:flex-start;padding:16px;border:1px solid var(--line);border-radius:14px;background:#fff}.notification-card.unread{border-color:#d6caff;background:#fcfaff}.notification-symbol{height:38px;width:38px;flex-shrink:0;display:grid;place-items:center;background:var(--purple-pale);border-radius:12px;font-size:18px}.notification-copy{min-width:0;flex:1}.notification-copy h3{font-size:13px;margin:1px 0 6px}.notification-copy p{font-size:12px;color:#716d84;line-height:1.6}.notification-meta{font-size:10px;color:#9b96ad;margin-top:8px}.notification-card button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:10px;color:var(--purple-dark);font-weight:700}.recording-card{border:1px solid var(--line);border-radius:15px;background:#fff;overflow:hidden}.recording-card video{display:block;width:100%;max-height:360px;background:#171421}.recording-details{padding:14px}.recording-details h3{font-size:13px;margin-bottom:7px}.recording-details p{font-size:11px;color:var(--muted);line-height:1.6}.recording-list{grid-template-columns:repeat(2,minmax(0,1fr))}.system-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.system-actions .soft-button{min-height:40px}.monitoring-state{font-size:12px;line-height:1.55;margin-top:10px;color:var(--muted)}.topbar-bell{position:relative;width:39px;height:39px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#6c6883}.topbar-bell .nav-count{position:absolute;right:-5px;top:-5px;min-width:17px;height:17px;font-size:9px;padding:0 4px}@media(max-width:850px){.recording-list{grid-template-columns:1fr}}
+    @media(max-width:850px){:root{--sidebar:0px}.sidebar{display:none}.main-area{margin-left:0;padding:0 20px 100px}.topbar{height:76px;margin-bottom:21px}.mobile-nav{display:flex;position:fixed;z-index:50;bottom:0;left:0;right:0;background:#ffffffef;backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:8px 10px max(8px,env(safe-area-inset-bottom));gap:5px;overflow-x:auto;scrollbar-width:thin}.mobile-nav .nav-link{min-width:72px;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;padding:7px 5px;font-size:9px;border-radius:10px;white-space:nowrap}.mobile-nav .nav-icon{width:auto;font-size:17px}.content-grid{grid-template-columns:1fr}.topbar-right .date-pill{display:none}.welcome-banner{padding:23px}.welcome-banner h2{font-size:20px}.welcome-banner p{max-width:440px}}
+    @media(max-width:560px){.main-area{padding:0 13px 94px}.topbar{height:70px;margin-bottom:16px}.topbar h1{font-size:18px}.breadcrumbs{font-size:10px}.bell-btn{width:35px;height:35px}.topbar-right{gap:7px}.welcome-banner{padding:20px;border-radius:16px;align-items:flex-start;flex-direction:column}.welcome-banner h2{font-size:18px}.welcome-banner p{font-size:11px}.banner-action{padding:10px 12px}.stats-grid{gap:9px}.stat-card{padding:13px;border-radius:13px}.stat-value{font-size:20px;margin:12px 0 4px}.stat-label{font-size:10px}.stat-icon{height:30px;width:30px;font-size:14px}.stat-note{font-size:9px}.card{padding:14px;border-radius:14px}.card-title{font-size:13px}.camera-frame,.camera-frame img{min-height:205px}.section-heading{margin-top:22px}.section-heading h2{font-size:15px}.analytics-stats{gap:7px}.analytics-stat{padding:10px}.analytics-stat .value{font-size:19px}.analytics-stat .label{font-size:9px}.chart-row{grid-template-columns:66px minmax(35px,1fr) 24px;gap:8px}.chart-label,.count{font-size:10px}.wellness-grid{grid-template-columns:1fr}.topbar .title-group{min-width:0}.topbar h1{max-width:55vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mobile-nav .nav-link{min-width:63px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+    
+/* Compact Aroma Assignment UI */
+.aroma-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 14px 0 8px;
+}
+
+.aroma-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.aroma-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #66577e;
+}
+
+.aroma-field select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #e6dcff;
+  border-radius: 12px;
+  background: #faf8ff;
+  color: #49356f;
+  font-size: 13px;
+}
+
+@media (max-width: 400px) {
+  .aroma-controls {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Aroma card layout polish */
+.wellness-card:has(#aromaMood) {
+  padding: 22px !important;
+}
+
+.wellness-card:has(#aromaMood) #wellnessAroma {
+  margin: 10px 0 14px;
+  color: #8b719f;
+  font-size: 13px;
+}
+
+.wellness-card:has(#aromaMood) .aroma-controls {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  margin: 14px 0 !important;
+}
+
+.wellness-card:has(#aromaMood) .aroma-field {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+.wellness-card:has(#aromaMood) .aroma-field label {
+  display: block !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #78658f !important;
+}
+
+.wellness-card:has(#aromaMood) .aroma-field select {
+  display: block !important;
+  width: 100% !important;
+  min-height: 42px;
+  border-radius: 12px !important;
+  box-sizing: border-box !important;
+}
+
+.wellness-card:has(#aromaMood) #saveAromaPreference {
+  margin-top: 8px;
+  border-radius: 12px;
+}
+
+.physical-aroma-box {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #eadfff;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #fbf8ff, #fff9fc);
+}
+
+.physical-aroma-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.physical-aroma-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #f0e8ff;
+  font-size: 20px;
+}
+
+.physical-aroma-heading h4 {
+  margin: 0 0 3px;
+  font-size: 14px;
+  color: #48365f;
+}
+
+.physical-aroma-heading p {
+  margin: 0;
+  font-size: 12px;
+  color: #8b789f;
+}
+
+.physical-aroma-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #78658f;
+}
+
+.physical-aroma-box select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.physical-aroma-box #aromaContainerStatus {
+  margin: 9px 0 0;
+  font-size: 12px;
+  color: #78658f;
+}
+
+
+.aroma-management-card .aroma-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.aroma-management-card .aroma-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #78658f;
+}
+
+.aroma-management-card .aroma-field select,
+.container-assignment-row select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.physical-aroma-box {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #eadfff;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #fbf8ff, #fff9fc);
+}
+
+.physical-aroma-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.physical-aroma-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #f0e8ff;
+  font-size: 20px;
+}
+
+.physical-aroma-heading h4 {
+  margin: 0 0 3px;
+  font-size: 14px;
+  color: #48365f;
+}
+
+.physical-aroma-heading p {
+  margin: 0;
+  font-size: 12px;
+  color: #8b789f;
+}
+
+.container-assignment {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.container-assignment-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.container-assignment-row label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #59466f;
+}
+
+.container-assignment-row input[type="checkbox"] {
+  accent-color: #9b7bce;
+}
+
+.container-assignment-row select {
+  padding: 9px;
+  border: 1px solid #e6dcff;
+  border-radius: 10px;
+  background: #fff;
+  color: #49356f;
+  font-size: 12px;
+}
+
+.physical-aroma-box #aromaContainerStatus {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: #78658f;
+}
+
+
+    /* Small Reflection card only: expanded, functional form */
+    .wellness-card.small-reflection-card {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+      min-height: 0;
+      height: auto;
+      padding: 20px;
+      margin: 0;
+      align-self: start;
+      box-sizing: border-box;
+    }
+    .wellness-card.small-reflection-card .feature-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      font-size: 21px;
+    }
+    .wellness-card.small-reflection-card h3 {
+      font-size: 15px;
+      margin: 0 0 8px;
+    }
+    .wellness-card.small-reflection-card p {
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0 0 14px;
+    }
+    .small-reflection-card .reflection-field-label {
+      display: block;
+      margin: 14px 0 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #65527f;
+    }
+    .small-reflection-card .reflection-focus,
+    .small-reflection-card .reflection-thought {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #e6dcff;
+      border-radius: 12px;
+      background: #fcfbff;
+      color: #302449;
+      font: inherit;
+      font-size: 13px;
+      padding: 12px;
+      outline: none;
+    }
+    .small-reflection-card .reflection-focus:focus,
+    .small-reflection-card .reflection-thought:focus {
+      border-color: #a78bfa;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, .10);
+    }
+    .small-reflection-card .reflection-thought {
+      min-height: 78px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .small-reflection-card .reflection-save {
+      margin-top: 12px;
+    }
+    .small-reflection-card .reflection-saved-tag {
+      display: inline-flex;
+      margin-top: 14px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: #f3edff;
+      color: #6240c8;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    @media (max-width: 560px) {
+      .wellness-card.small-reflection-card { padding: 16px; }
+    }
+
+    /* Profile page only: premium dashboard styling; shared app layout is untouched. */
+    .profile-dashboard-page{max-width:1500px;margin:0 auto}
+    .profile-page-intro{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:-3px 0 18px}
+    .profile-page-intro h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:23px;letter-spacing:-.6px}
+    .profile-page-intro p{font-size:12px;color:var(--muted);margin-top:4px}
+    .profile-local-badge{font-size:11px;font-weight:700;color:var(--purple-dark);background:#eee8ff;border-radius:30px;padding:9px 13px;white-space:nowrap}
+    .profile-hero-card{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;gap:22px;padding:28px 30px;margin-bottom:18px;border:1px solid #e9e0ff;border-radius:22px;background:linear-gradient(110deg,#f0eaff 0%,#faf7ff 62%,#fff7fa 100%);min-height:174px}
+    .profile-avatar-wrap{position:relative;flex:0 0 auto}
+    .profile-avatar-large{width:104px;height:104px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#ffdce4,#e9ddff);color:#6140d1;font-family:'Plus Jakarta Sans',sans-serif;font-size:34px;font-weight:800;box-shadow:0 8px 20px #7154cf16}
+    .profile-avatar-status{position:absolute;right:-3px;bottom:0;width:35px;height:35px;display:grid;place-items:center;border:3px solid #fff;border-radius:50%;background:#7655d9;color:#fff;font-size:17px}
+    .profile-hero-copy{position:relative;z-index:2;min-width:0;flex:1}
+    .profile-eyebrow{font-size:10px;letter-spacing:1.6px;font-weight:800;color:#8064d7;margin-bottom:8px}
+    .profile-hero-copy h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:25px;letter-spacing:-.65px;margin-bottom:5px;overflow-wrap:anywhere}
+    .profile-hero-copy p{font-size:13px;color:#77718e;line-height:1.5}
+    .profile-pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+    .profile-pills span{background:#ffffffd9;border:1px solid #eee8ff;border-radius:30px;padding:8px 11px;font-size:10px;font-weight:700;color:#5c4a9d}
+    .profile-edit-button,.profile-view-button{position:relative;z-index:2;border:1px solid #dfd3ff;border-radius:12px;padding:10px 13px;background:#fff;color:#5d3fc6;font-size:11px;font-weight:800;white-space:nowrap}
+    .profile-edit-button:hover,.profile-view-button:hover{background:#f7f2ff}
+    .profile-flower-art{position:absolute;right:6%;top:-37px;font-size:185px;line-height:1;color:#8b70e70d;z-index:-1;pointer-events:none}
+    .profile-dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:stretch}
+    .profile-dashboard-grid>.card{padding:20px 22px;min-width:0}
+    .profile-section-heading{display:flex;align-items:center;gap:11px;margin-bottom:17px;min-width:0}
+    .profile-heading-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:#f0eaff;color:#6947d1;font-size:18px;flex:0 0 auto}
+    .profile-section-heading h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;letter-spacing:-.2px}
+    .profile-section-heading p{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}
+    .profile-info-row{display:grid;grid-template-columns:28px minmax(82px,.72fr) minmax(0,1.5fr);align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #f0edf7;font-size:12px}
+    .profile-info-row:last-child{border-bottom:0;padding-bottom:1px}
+    .profile-info-icon{width:27px;height:27px;border-radius:9px;background:#f7f4ff;display:grid;place-items:center;color:#8b73d7}
+    .profile-info-label{color:#77738e}
+    .profile-info-row strong{font-size:11px;text-align:right;line-height:1.5;overflow-wrap:anywhere}
+    .profile-activity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+    .profile-stat{display:flex;align-items:center;gap:12px;min-height:91px;padding:14px;border-radius:16px;min-width:0}
+    .profile-stat-pink{background:#fff2f5}.profile-stat-blue{background:#f1f4ff}.profile-stat-green{background:#f1faf3}.profile-stat-amber{background:#fff8ec}
+    .profile-stat-icon{width:42px;height:42px;display:grid;place-items:center;flex:0 0 auto;border-radius:14px;background:#ffffffa8;font-size:21px;color:#6745ce}
+    .profile-stat>div{display:flex;flex-direction:column;min-width:0}
+    .profile-stat strong{font-family:'Plus Jakarta Sans',sans-serif;font-size:23px;line-height:1.2;color:#19173b}
+    .profile-stat span:not(.profile-stat-icon){font-size:10px;color:#6d6886;margin-top:4px;line-height:1.35}
+    .profile-stat small{font-size:9px;color:#9992ad;margin-top:3px}
+    .profile-section-heading .profile-view-button{margin-left:auto;padding:8px 10px;font-size:10px}
+    .profile-recent-list{display:flex;flex-direction:column}
+    .profile-recent-item{display:flex;align-items:flex-start;gap:11px;padding:12px 0;border-bottom:1px solid #f0edf7;font-size:12px;line-height:1.5}
+    .profile-recent-item:last-child{border-bottom:0;padding-bottom:0}
+    .profile-recent-dot{width:10px;height:10px;border-radius:50%;background:#8867e7;box-shadow:0 0 0 4px #f0eaff;flex:0 0 auto;margin:5px 3px 0}
+    .profile-recent-text{flex:1;overflow-wrap:anywhere}.profile-recent-date{font-size:10px;color:var(--muted);white-space:nowrap;margin-left:8px}
+    .profile-empty-reflection{font-size:11px;color:var(--muted);line-height:1.6;padding:7px 0}
+    .profile-preference-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #f0edf7;min-width:0}
+    .profile-preference-row:last-child{border-bottom:0;padding-bottom:0}
+    .profile-preference-icon{width:38px;height:38px;display:grid;place-items:center;flex:0 0 auto;border-radius:13px;background:#f4efff;color:#7655d9;font-size:18px}
+    .profile-preference-row>div{flex:1;min-width:0}.profile-preference-row strong{font-size:11px}.profile-preference-row p{font-size:10px;line-height:1.5;color:var(--muted);margin-top:4px}
+    .profile-privacy-status{font-size:10px;font-weight:800;color:#168768;white-space:nowrap}
+    .profile-logout-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding:16px 20px;background:#fff;border:1px solid #f2e5ec;border-radius:16px;box-shadow:var(--shadow)}
+    .profile-logout-row strong{font-size:12px}.profile-logout-row p{font-size:10px;color:var(--muted);margin-top:4px}
+    .profile-logout-button{border:1px solid #ffd8e1;border-radius:11px;background:#fff3f6;color:#d83e64;padding:10px 15px;font-size:11px;font-weight:800;white-space:nowrap}
+    .profile-logout-button:hover{background:#ffe8ee}
+    @media(max-width:1050px){.profile-dashboard-grid{grid-template-columns:minmax(0,1fr)}.profile-hero-card{gap:17px}.profile-flower-art{right:2%}}
+    @media(max-width:650px){.profile-page-intro{align-items:flex-start}.profile-local-badge{display:none}.profile-hero-card{padding:21px 18px;align-items:flex-start;flex-wrap:wrap;gap:14px}.profile-avatar-large{width:76px;height:76px;font-size:27px}.profile-hero-copy{flex-basis:calc(100% - 95px)}.profile-hero-copy h2{font-size:20px}.profile-edit-button{margin-left:90px}.profile-dashboard-grid>.card{padding:17px}.profile-info-row{grid-template-columns:27px 80px minmax(0,1fr);gap:8px}.profile-activity-grid{gap:9px}.profile-stat{padding:10px;gap:8px;min-height:82px}.profile-stat-icon{width:34px;height:34px;font-size:17px}.profile-stat strong{font-size:20px}.profile-section-heading{flex-wrap:wrap}.profile-section-heading .profile-view-button{margin-left:auto}.profile-recent-date{white-space:normal;text-align:right}.profile-logout-row{align-items:flex-start}}
+
+  </style>
+  
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
+
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Main navigation">
+    <div class="brand"><div class="brand-mark">✿</div><div><div class="brand-name">Smart Aroma</div><div class="brand-sub">AI Wellness Platform</div></div></div>
+    <div class="workspace-label">Workspace</div>
+    <nav class="nav-list" id="desktopNav">
+      <button class="nav-link active" data-page="dashboard"><span class="nav-icon">▦</span><span>Dashboard</span></button>
+      <button class="nav-link" data-page="detection"><span class="nav-icon">◎</span><span>Emotion Detection</span></button>
+      <button class="nav-link" data-page="wellness"><span class="nav-icon">✧</span><span>Wellness Studio</span></button>
+      <button class="nav-link" data-page="analytics"><span class="nav-icon">▥</span><span>Emotion Analytics</span></button>
+      <button class="nav-link" data-page="history"><span class="nav-icon">◷</span><span>Emotion History</span></button>
+      <button class="nav-link" data-page="recordings"><span class="nav-icon">▣</span><span>Camera Recordings</span></button>
+      <button class="nav-link" data-page="notifications"><span class="nav-icon">♧</span><span>Notifications</span><span class="nav-count" id="notificationCount" hidden>0</span></button>
+      <div class="nav-caption">Personal</div>
+      <button class="nav-link" data-page="profile"><span class="nav-icon">♙</span><span>My Profile</span></button>
+      <button class="nav-link" data-page="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="help-card"><div class="help-icon">🌿</div><h4>A moment for yourself</h4><p>Small mindful breaks can help you reset and refocus throughout the day.</p></div>
+      <div class="profile-mini"><div class="avatar">SA</div><div><div class="profile-name">Wellness Space</div><div class="profile-role">Personal dashboard</div></div></div>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="topbar">
+      <div class="title-group"><div class="breadcrumbs">Workspace <span style="padding:0 5px;color:#c0bbd0">/</span> <span id="breadcrumbCurrent">Dashboard</span></div><h1 id="pageTitle">Your wellness overview</h1></div>
+      <div class="topbar-right"><div class="date-pill" id="todayDate">📅 Today</div><button class="topbar-bell" id="notificationQuickButton" aria-label="Open notifications" title="Notifications">♧<span class="nav-count" id="notificationTopCount" hidden>0</span></button><button class="bell-btn" id="refreshButton" aria-label="Refresh dashboard" title="Refresh data">↻<span class="bell-dot"></span></button></div>
+    </header>
+
+    <section class="page active" id="page-dashboard">
+      <div class="welcome-banner"><div class="welcome-content"><div class="eyebrow">YOUR PERSONAL WELLNESS SPACE</div><h2>A little more awareness, every day 🌱</h2><p>Explore your current emotion, view your aroma recommendation, and discover simple wellness ideas in one place.</p></div><button class="banner-action" data-go="detection">Open emotion detection&nbsp; →</button></div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-top"><span class="stat-label">Current emotion</span><span class="stat-icon">🧠</span></div><div class="stat-value" id="dashEmotion">Waiting...</div><div class="stat-note">Live model prediction</div></div>
+        <div class="stat-card"><div class="stat-top"><span class="stat-label">Aroma suggestion</span><span class="stat-icon">🌸</span></div><div class="stat-value" id="dashAroma">Waiting...</div><div class="stat-note">Based on latest recommendation</div></div>
+        <div class="stat-card"><div class="stat-top"><span class="stat-label">Confirmed records</span><span class="stat-icon">◷</span></div><div class="stat-value" id="dashTotal">—</div><div class="stat-note">Saved in your local history</div></div>
+        <div class="stat-card"><div class="stat-top"><span class="stat-label">System status</span><span class="stat-icon">✦</span></div><div class="stat-value" style="font-size:21px;color:var(--green)">Active</div><div class="stat-note good">● Flask service connected</div></div>
+      </div>
+      <div class="section-heading"><div><h2>Live monitoring</h2><p>The camera stays available while the Python app and computer are running. Scheduled video clips can be saved for the configured duration even when no face or emotion is detected, with recording enabled and consent on. Emotion-based spray still requires a verified registered face.</p></div><button class="text-link" data-go="detection">Full detection view →</button></div>
+      <div class="content-grid">
+        <article class="card"><div class="card-header"><div><div class="card-title">Live emotion detection</div><div class="card-subtitle">Keep your face clearly visible to the camera.</div></div><span class="tiny-tag"><span class="pulse" style="display:inline-block;margin-right:5px;vertical-align:middle"></span>Live feed</span></div><div class="camera-slot" id="dashboardCameraSlot"><div class="camera-frame"><img id="liveCamera" src="{{ url_for('video_feed') }}" alt="Live emotion detection camera feed"><div class="camera-overlay"><span class="pulse"></span> CAMERA ACTIVE</div></div></div><div class="camera-foot"><span>AI face detection · CNN emotion model</span><button class="soft-button" data-go="detection">View details ↗</button></div></article>
+        <article class="card"><div class="card-header"><div><div class="card-title">Current recommendation</div><div class="card-subtitle">Latest result from the emotion system.</div></div><span class="tiny-tag purple">AI insight</span></div><div class="emotion-hero"><div class="emotion-kicker">DETECTED EMOTION</div><div class="emotion-big" id="dashEmotionBig">Waiting...</div><div class="emotion-helper">This is a model prediction, not a clinical assessment.</div></div><div class="recommend-row"><div class="recommend-icon">🌿</div><div><div class="recommend-label">Suggested aroma</div><div class="recommend-value" id="dashAromaDetail">Waiting for recommendation</div></div></div><div class="recommend-row"><div class="recommend-icon">💜</div><div><div class="recommend-label">Wellness suggestion</div><div class="recommend-value" id="dashSuggestion">Waiting for emotion detection.</div></div></div><button class="soft-button" style="width:100%;margin-top:15px" data-go="wellness">Explore wellness ideas →</button></article>
+      </div>
+      <div class="section-heading"><div><h2>Emotion snapshot</h2><p>A quick view of recorded emotions across all saved history.</p></div><button class="text-link" data-go="analytics">Open analytics →</button></div>
+      <article class="card"><div class="card-header"><div><div class="card-title">Emotion distribution</div><div class="card-subtitle">Based on confirmed records in the database.</div></div><span class="tiny-tag purple">All time</span></div><div class="bars" id="dashboardChart"><div class="empty-state">Loading emotion statistics…</div></div></article>
+    </section>
+
+    <section class="page" id="page-detection">
+      <div class="section-heading" style="margin-top:0"><div><h2>Emotion detection</h2><p>Live camera preview and current prediction from your CNN model.</p></div><span class="tiny-tag"><span class="pulse" style="display:inline-block;margin-right:5px;vertical-align:middle"></span>Monitoring</span></div>
+      <div class="content-grid">
+        <article class="card"><div class="card-header"><div><div class="card-title">Camera preview</div><div class="card-subtitle">Position your face inside the camera view.</div></div><span class="tiny-tag">OpenCV</span></div><div class="camera-slot" id="detectionCameraSlot"></div><div class="camera-foot"><span>Predictions run while the camera is available.</span><span>Local processing</span></div></article>
+        <article class="card"><div class="card-header"><div><div class="card-title">Detection status</div><div class="card-subtitle">Latest values returned by the backend.</div></div></div><div class="emotion-hero"><div class="emotion-kicker">CURRENT EMOTION</div><div class="emotion-big" id="detectEmotion">Waiting...</div><div class="emotion-helper">Emotion classifications can be imperfect and may change with lighting, position, and model limitations.</div></div><div class="recommend-row"><div class="recommend-icon">🌸</div><div><div class="recommend-label">Aroma recommendation</div><div class="recommend-value" id="detectAroma">Waiting...</div></div></div><div class="recommend-row"><div class="recommend-icon">🌱</div><div><div class="recommend-label">Suggested next step</div><div class="recommend-value" id="detectSuggestion">Waiting...</div></div></div><div class="note-card">Emotion detection and aroma commands are enabled only while the registered face remains verified. Physical relay commands require the Arduino USB connection and hardware-enabled mode.</div></article>
+      </div>
+    </section>
+
+    <section class="page" id="page-wellness">
+      <div class="welcome-banner"><div class="welcome-content"><div class="eyebrow">WELLNESS STUDIO</div><h2>Make space for a mindful pause ✨</h2><p>Explore simple, optional wellness ideas alongside your latest emotion and aroma recommendation.</p></div><button class="banner-action" data-go="detection">Check latest emotion →</button></div>
+      <div class="card" style="margin-bottom:17px"><div class="card-header"><div><div class="card-title">Your current insight</div><div class="card-subtitle">Updated from your running Flask backend.</div></div><span class="tiny-tag purple">Personalized view</span></div><div class="emotion-hero" style="margin:0"><div class="emotion-kicker">LATEST DETECTED EMOTION</div><div class="emotion-big" id="wellnessEmotion">Waiting...</div><div class="emotion-helper" id="wellnessSummary">Waiting for the latest prediction.</div></div></div>
+      <div class="wellness-grid">
+        <article class="wellness-card"><div class="feature-icon">🌬️</div><h3>Guided breathing break</h3><p id="breathingSuggestion">Take a few natural, comfortable breaths. Stop if you feel dizzy or uncomfortable.</p><div class="breathing-controls"><div class="breathing-orb" id="breathingOrb" aria-hidden="true"></div><div class="breathing-status" id="breathingStep" aria-live="polite">Ready when you are</div><div class="breathing-time" id="breathingTime">60 seconds</div><button class="soft-button" id="breathingToggle" type="button">Start 60-second guide</button></div><span class="wellness-tag">Optional · stop anytime</span></article>
+
+<article class="wellness-card">
+  <div class="feature-icon">🧘</div>
+  <h3>Mindful pause</h3>
+  <p id="meditationSuggestion">Sit comfortably and notice your surroundings for one quiet minute.</p>
+  <div class="breathing-controls">
+    <div id="mindfulTimer" class="breathing-time" aria-live="polite">60 seconds</div>
+    <button class="soft-button" id="mindfulToggle" type="button">Start mindful pause</button>
+  </div>
+  <span class="wellness-tag">Gentle mindfulness · Optional</span>
+</article>
+
+<article class="wellness-card">
+  <div class="feature-icon">🎵</div>
+  <h3>Music suggestion</h3>
+
+  <p id="musicSuggestion">
+    Take a relaxing break with calming music.
+  </p>
+
+  <a
+    class="soft-button"
+    id="spotifyMusicLink"
+    href="https://open.spotify.com/search/relaxing%20music"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    🎧 Listen on Spotify
+  </a>
+
+  <span class="wellness-tag">Personal listening</span>
+</article>
+
+
+<article class="wellness-card">
+  <div class="feature-icon">🎵</div>
+  <h3>Emotion-Based Music</h3>
+
+  <p id="musicSuggestion">
+    Verify your face to receive a music suggestion.
+  </p>
+
+  <a
+    class="soft-button"
+    id="spotifyMusicLink"
+    href="https://open.spotify.com/search/relaxing%20music"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    🎧 Listen on Spotify
+  </a>
+
+  <span class="wellness-tag">Mood-based listening</span>
+</article>
+
+
+<article class="wellness-card">
+  <div class="feature-icon">💖</div>
+  <h3>Positive reminder</h3>
+  <p id="positiveReminder">
+    You are allowed to take things one step at a time.
+  </p>
+  <button
+    class="soft-button"
+    id="newReminderBtn"
+    type="button"
+  >
+    Show another reminder
+  </button>
+<button class="soft-button" id="shareThoughtsBtn" type="button">
+  💬 Share your thoughts
+</button>
+
+<div id="thoughtsPanel" hidden>
+  <p>What's on your mind today?</p>
+  <textarea
+    id="thoughtsInput"
+    placeholder="Write your thoughts here..."
+    rows="3"
+    maxlength="500"
+  ></textarea>
+
+  <button class="soft-button" id="saveThoughtBtn" type="button">
+    Save Reflection
+  </button>
+
+  <p id="thoughtsFeedback" aria-live="polite"></p>
+</div>
+
+</article>
+
+
+
+<article class="wellness-card aroma-management-card">
+  <div class="feature-icon">🌸</div>
+  <h3>Aroma Container Management</h3>
+
+  <p id="wellnessAroma">
+    Verify your face to view your aroma recommendation.
+  </p>
+
+  <div class="aroma-field">
+    <label for="aromaMood">Emotion</label>
+    <select id="aromaMood" class="soft-button">
+      <option value="Happy">😊 Happy</option>
+      <option value="Sad">😢 Sad</option>
+      <option value="Neutral">😐 Neutral</option>
+      <option value="Surprise">😲 Surprise</option>
+    </select>
+  </div>
+
+  <div class="aroma-field">
+    <label for="aromaPreference">Preferred Aroma</label>
+    <select id="aromaPreference" class="soft-button">
+      <option value="Citrus">🍊 Citrus</option>
+      <option value="Lavender">💜 Lavender</option>
+      <option value="Rosemary">🌿 Rosemary</option>
+      <option value="Eucalyptus">🍃 Eucalyptus</option>
+      <option value="Jasmine">🌼 Jasmine</option>
+      <option value="Sandalwood">🪵 Sandalwood</option>
+      <option value="Rose">🌹 Rose</option>
+      <option value="Tulsi">🌱 Tulsi</option>
+      <option value="Mint">🍃 Mint</option>
+      <option value="Orange">🍊 Orange</option>
+    </select>
+  </div>
+
+  <div class="physical-aroma-box">
+    <div class="physical-aroma-heading">
+      <span class="physical-aroma-icon">🫙</span>
+      <div>
+        <h4>Physical Aroma Containers</h4>
+        <p>Manage each emotion separately</p>
+      </div>
+    </div>
+
+    <div class="container-assignment">
+      <div class="container-assignment-row">
+        <label for="containerHappy">
+          <input type="checkbox" id="checkHappy">
+          😊 Happy
+        </label>
+        <select id="containerHappy" class="soft-button">
+          <option value="Citrus">Citrus</option>
+          <option value="Lavender">Lavender</option>
+          <option value="Rosemary">Rosemary</option>
+          <option value="Eucalyptus">Eucalyptus</option>
+          <option value="Jasmine">Jasmine</option>
+          <option value="Sandalwood">Sandalwood</option>
+          <option value="Rose">Rose</option>
+          <option value="Tulsi">Tulsi</option>
+          <option value="Mint">Mint</option>
+          <option value="Orange">Orange</option>
+        </select>
+      </div>
+
+      <div class="container-assignment-row">
+        <label for="containerSad">
+          <input type="checkbox" id="checkSad">
+          😢 Sad
+        </label>
+        <select id="containerSad" class="soft-button">
+          <option value="Lavender">Lavender</option>
+          <option value="Citrus">Citrus</option>
+          <option value="Rosemary">Rosemary</option>
+          <option value="Eucalyptus">Eucalyptus</option>
+          <option value="Jasmine">Jasmine</option>
+          <option value="Sandalwood">Sandalwood</option>
+          <option value="Rose">Rose</option>
+          <option value="Tulsi">Tulsi</option>
+          <option value="Mint">Mint</option>
+          <option value="Orange">Orange</option>
+        </select>
+      </div>
+
+      <div class="container-assignment-row">
+        <label for="containerNeutral">
+          <input type="checkbox" id="checkNeutral">
+          😐 Neutral
+        </label>
+        <select id="containerNeutral" class="soft-button">
+          <option value="Eucalyptus">Eucalyptus</option>
+          <option value="Citrus">Citrus</option>
+          <option value="Lavender">Lavender</option>
+          <option value="Rosemary">Rosemary</option>
+          <option value="Jasmine">Jasmine</option>
+          <option value="Sandalwood">Sandalwood</option>
+          <option value="Rose">Rose</option>
+          <option value="Tulsi">Tulsi</option>
+          <option value="Mint">Mint</option>
+          <option value="Orange">Orange</option>
+        </select>
+      </div>
+
+      <div class="container-assignment-row">
+        <label for="containerSurprise">
+          <input type="checkbox" id="checkSurprise">
+          😲 Surprise
+        </label>
+        <select id="containerSurprise" class="soft-button">
+          <option value="Rosemary">Rosemary</option>
+          <option value="Citrus">Citrus</option>
+          <option value="Lavender">Lavender</option>
+          <option value="Eucalyptus">Eucalyptus</option>
+          <option value="Jasmine">Jasmine</option>
+          <option value="Sandalwood">Sandalwood</option>
+          <option value="Rose">Rose</option>
+          <option value="Tulsi">Tulsi</option>
+          <option value="Mint">Mint</option>
+          <option value="Orange">Orange</option>
+        </select>
+      </div>
+    </div>
+
+    <p id="aromaContainerStatus" aria-live="polite">
+      Select the emotions assigned to physical containers.
+    </p>
+  </div>
+
+  <button class="soft-button" id="saveAromaPreference" type="button">
+    Save Assignments
+  </button>
+
+  <span class="wellness-tag">
+    Manual assignment · Not medical advice
+  </span>
+</article>
+
+
+
+<article class="wellness-card small-reflection-card" id="smallReflectionCard">
+  <div class="feature-icon">📝</div>
+  <h3>Small reflection</h3>
+  <p id="reflectionSuggestion">What would you like to focus on next?</p>
+  <label class="reflection-field-label" for="reflectionFocus">Today I want to focus on</label>
+  <select class="reflection-focus" id="reflectionFocus">
+    <option>Self-awareness</option>
+    <option>Gratitude</option>
+    <option>Confidence</option>
+    <option>Stress management</option>
+    <option>Personal growth</option>
+  </select>
+  <label class="reflection-field-label" for="reflectionThought">A small thought or next step</label>
+  <textarea class="reflection-thought" id="reflectionThought" placeholder="Write a few words for yourself..."></textarea>
+  <button class="soft-button reflection-save" id="saveSmallReflection" type="button">Save reflection</button>
+  <div><span class="reflection-saved-tag" id="reflectionSavedTag">Self-awareness</span></div>
+  <p id="reflectionSaveStatus" aria-live="polite" style="font-size:12px;margin-top:8px"></p>
+</article>
+      </div>
+      <div class="note-card">Emotion prediction is an estimate and does not diagnose mental-health conditions. Wellness ideas are general suggestions; choose only what feels comfortable for you.</div>
+    </section>
+
+    <section class="page" id="page-analytics">
+      <div class="section-heading" style="margin-top:0"><div><h2>Emotion analytics</h2><p>Review recorded emotion counts over different time periods.</p></div></div>
+      <article class="card"><div class="card-header"><div><div class="card-title">Analytics overview</div><div class="card-subtitle">Choose a period to update the report.</div></div><div class="period-tabs" id="periodTabs"><button data-period="today">Today</button><button data-period="week">This week</button><button data-period="month">This month</button><button class="active" data-period="all">All time</button></div></div><div class="selected-period" style="font-size:11px;color:var(--muted);margin-bottom:10px">Showing: <strong id="selectedPeriod" style="color:var(--purple-dark)">All time</strong></div><div class="analytics-stats"><div class="analytics-stat"><div class="value" id="totalDetections">0</div><div class="label">Confirmed records</div></div><div class="analytics-stat"><div class="value" id="mostDetected">—</div><div class="label">Most recorded emotion</div></div><div class="analytics-stat"><div class="value" id="differentEmotions">0</div><div class="label">Emotion categories recorded</div></div></div><div class="section-heading" style="margin:10px 0 17px"><div><h2 style="font-size:13px">Emotion distribution</h2><p>Counts reflect saved recommendations, not every camera frame.</p></div></div><div class="bars" id="analyticsChart"><div class="empty-state">Loading emotion statistics…</div></div></article>
+    </section>
+
+    <section class="page" id="page-history">
+      <div class="section-heading" style="margin-top:0"><div><h2>Emotion history</h2><p>Most recent confirmed emotion and aroma recommendation records.</p></div><button class="soft-button" id="historyRefresh">↻ Refresh history</button></div>
+      <article class="card"><div class="card-header"><div><div class="card-title">Recent activity</div><div class="card-subtitle">Showing the latest records available from the local database.</div></div><span class="tiny-tag purple">Latest 20</span></div><div class="table-wrap"><table class="history-table"><thead><tr><th>Emotion</th><th>Aroma</th><th>Wellness suggestion</th><th>Date & time</th></tr></thead><tbody id="historyTable"><tr><td colspan="4" class="empty-state">Loading history…</td></tr></tbody></table></div></article>
+    </section>
+
+    <section class="page" id="page-recordings">
+      <div class="section-heading" style="margin-top:0"><div><h2>Camera recordings</h2><p>Continuous MP4 recording is split into fixed-duration clips. Clips are saved locally with owner and metadata in SQLite. You can view or delete finalized clips here, including clips with no face or emotion detection. The list refreshes automatically.</p></div><button class="soft-button" id="recordingsRefresh">↻ Refresh clips</button></div>
+      <div class="note-card" style="margin-bottom:15px">In Settings, choose how often a clip starts (for example every 30 minutes) and its length (from 1 second up to 1 hour). A scheduled clip may capture any person or scene visible to the camera, even if no face is recognized. Use only with appropriate consent. Unknown or unverified faces never trigger emotion-based spray.</div>
+      <div class="recording-list" id="recordingsList"><div class="card empty-state">Loading recordings…</div></div>
+    </section>
+
+    <section class="page" id="page-notifications">
+      <div class="section-heading" style="margin-top:0"><div><h2>Your little nudges 💌</h2><p>Playful emotion-based messages and a daily summary of saved records. Camera emotion labels are estimates, not facts about how you feel.</p></div><button class="soft-button" id="notificationsRefresh">↻ Refresh</button></div>
+      <article class="card" style="margin-bottom:15px"><div class="card-title">Browser notifications</div><div class="card-subtitle" style="margin:6px 0 12px">Allow optional desktop notifications for new wellness nudges. In-app notifications still appear without this permission.</div><button class="soft-button" id="enableBrowserNotifications">Enable browser notifications</button><p class="monitoring-state">Daily analysis notifications are generated after 8:00 PM local time while the app is running. Keep the Python app running for scheduled reports.</p></article>
+      <article class="card daily-report-card" style="margin-bottom:15px">
+        <div class="card-header"><div><div class="card-title">Today's emotion snapshot 📊</div><div class="card-subtitle">A live preview of your saved, confirmed recommendations. The end-of-day summary is sent after 8 PM.</div></div><button class="soft-button" id="dailySummaryRefresh">↻ Refresh report</button></div>
+        <div class="analytics-stats">
+          <div class="analytics-stat"><div class="value" id="dailySummaryTotal">—</div><div class="label">Confirmed records today</div></div>
+          <div class="analytics-stat"><div class="value" id="dailySummaryTopEmotion">—</div><div class="label">Most frequent model label</div></div>
+          <div class="analytics-stat"><div class="value" id="dailySummaryTopAroma">—</div><div class="label">Most suggested aroma</div></div>
+        </div>
+        <div class="section-heading" style="margin:8px 0 14px"><div><h2 style="font-size:13px">Today's emotion breakdown</h2><p id="dailySummaryNote">Loading today's report…</p></div></div>
+        <div class="bars" id="dailySummaryChart"><div class="empty-state">Loading today's report…</div></div>
+        <div class="note-card" style="margin-top:14px">Your expression is only a model estimate, not a statement of how you truly feel. You are always the authority on your own mood.</div>
+      </article>
+      <div class="notification-list" id="notificationsList"><div class="card empty-state">Loading notifications…</div></div>
+    </section>
+
+    <section class="page profile-dashboard-page" id="page-profile">
+      <div class="profile-page-intro"><div><h2>My profile</h2><p>Manage your account information and view your activity summary.</p></div><span class="profile-local-badge">✦ Personal space</span></div>
+      <article class="profile-hero-card">
+        <div class="profile-avatar-wrap"><div class="profile-avatar-large" id="profileAvatar">GS</div><span class="profile-avatar-status" title="Local profile">✿</span></div>
+        <div class="profile-hero-copy"><div class="profile-eyebrow">YOUR PERSONAL SPACE</div><h2 id="profileDisplayName">Loading profile…</h2><p id="profileDescription">Your personal Smart Aroma wellness space</p><div class="profile-pills"><span id="profileDepartmentPill">Department not provided</span><span id="profileStudyYearPill">Year not provided</span><span id="profileLocationPill">Location not provided</span></div></div>
+        <button class="profile-edit-button" type="button" id="profileEditButton">✎ &nbsp; Edit Profile</button>
+        <div class="profile-flower-art" aria-hidden="true">✿</div>
+      </article>
+      <div class="profile-dashboard-grid">
+        <article class="card profile-info-card">
+          <div class="profile-section-heading"><span class="profile-heading-icon">♙</span><div><h3>Account Information</h3><p>Your profile overview</p></div></div>
+          <div class="profile-info-row"><span class="profile-info-icon">♙</span><span class="profile-info-label">Full Name</span><strong id="profileFullName">Loading…</strong></div>
+          <div class="profile-info-row"><span class="profile-info-icon">✉</span><span class="profile-info-label">Email</span><strong id="profileEmail">Loading…</strong></div>
+          
+        </article>
+        <article class="card profile-activity-card">
+          <div class="profile-section-heading"><span class="profile-heading-icon">▥</span><div><h3>Activity Summary</h3><p>Based on available app data</p></div></div>
+          <div class="profile-activity-grid">
+            <div class="profile-stat profile-stat-pink"><span class="profile-stat-icon">♡</span><div><strong id="profileEmotionCount">—</strong><span>Emotion records</span></div></div>
+            <div class="profile-stat profile-stat-blue"><span class="profile-stat-icon">♫</span><div><strong>—</strong><span>Music sessions</span><small>Not tracked by this app</small></div></div>
+            <div class="profile-stat profile-stat-green"><span class="profile-stat-icon">🌿</span><div><strong>—</strong><span>Mindful breaks</span><small>Not tracked by this app</small></div></div>
+            <div class="profile-stat profile-stat-amber"><span class="profile-stat-icon">▤</span><div><strong id="profileReflectionCount">0</strong><span>Reflections saved</span></div></div>
+          </div>
+        </article>
+        <article class="card profile-reflections-card">
+          <div class="profile-section-heading"><span class="profile-heading-icon">▣</span><div><h3>Recently Saved Reflections</h3><p>Your latest note on this browser</p></div><button class="profile-view-button" type="button" id="profileViewReflection">View Wellness</button></div>
+          <div id="profileRecentReflections" class="profile-recent-list"><p class="profile-empty-reflection">No saved reflection yet. Add one in Wellness Studio.</p></div>
+        </article>
+        <article class="card profile-preferences-card">
+          <div class="profile-section-heading"><span class="profile-heading-icon">⚙</span><div><h3>Preferences</h3><p>Manage your experience</p></div></div>
+          <div class="profile-preference-row"><span class="profile-preference-icon">☾</span><div><strong>System settings</strong><p>Manage monitoring, recording and privacy.</p></div><button class="profile-view-button" type="button" id="profileOpenSettings">Open Settings ↗</button></div>
+          <div class="profile-preference-row"><span class="profile-preference-icon">♧</span><div><strong>Privacy & safety</strong><p>Face verification is required for personalized emotion features.</p></div><span class="profile-privacy-status">● Protected</span></div>
+        </article>
+      </div>
+      <article class="profile-logout-row"><div><strong>Want to leave your account?</strong><p>Log out of your Smart Aroma session on this device.</p></div><button class="profile-logout-button" type="button" id="profileLogoutButton">⇥ &nbsp; Logout</button></article>
+    </section>
+
+    <section class="page" id="page-settings">
+      <div class="section-heading" style="margin-top:0"><div><h2>System settings</h2><p>Manage always-on monitoring, recording consent and integration status.</p></div></div>
+      <article class="card"><div class="card-header"><div><div class="card-title">Continuous monitoring</div><div class="card-subtitle">This setting stays saved in your local user profile.</div></div><span class="tiny-tag" id="monitoringBadge">Checking…</span></div>
+        <div class="status-line"><span>Local camera service</span><span class="status-value" id="cameraStatus">Checking…</span></div>
+        <div class="status-line"><span>Emotion model</span><span class="status-value">CNN · TensorFlow/Keras</span></div>
+        <div class="status-line"><span>Face recognition</span><span class="status-value">OpenCV YuNet + SFace · local face-match prototype</span></div>
+        <div class="status-line"><span>Database</span><span class="status-value">SQLite</span></div>
+        <div class="status-line"><span>Arduino relay</span><span class="status-value">USB serial · hardware mode must be enabled separately</span></div>
+        <div class="system-actions"><button class="soft-button" id="monitoringToggle">Pause monitoring, recording & spray</button></div>
+        <p class="monitoring-state" id="monitoringHelp">Monitoring and recording require your explicit consent. Scheduled recording runs only when its separate timer is enabled in Settings. You can pause monitoring to stop upcoming recordings and emotion-based spray.</p>
+        <div class="note-card">The camera operates only while the PC is awake and python app.py is running. Scheduled video clips may capture the room or people even when no face/emotion is detected. Record only in places where you have appropriate consent. Unknown or unverified faces remain blocked from personalized emotion processing and emotion-based spray; explicitly enabled fallback options are separate and use the shared timer.</div>
+      </article>
+<article class="card" style="margin-top:18px">
+        <div class="card-header"><div><div class="card-title">Emotion cycle & spray timer</div><div class="card-subtitle">Set how often the system samples 10 predictions and how long the aroma relay stays on.</div></div><span class="tiny-tag purple">Configurable</span></div>
+        <div class="timer-settings-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+          <label style="display:grid;gap:7px;font-size:12px;font-weight:700">Sampling interval
+            <div style="display:flex;gap:8px"><input id="timerIntervalValue" type="number" min="5" max="604800" value="1" style="min-width:0;width:100%;padding:11px;border:1px solid var(--line);border-radius:10px"/><select id="timerIntervalUnit" style="padding:11px;border:1px solid var(--line);border-radius:10px;background:white"><option value="seconds">Seconds</option><option value="minutes">Minutes</option><option value="hours" selected>Hours</option></select></div>
+          </label>
+          <label style="display:grid;gap:7px;font-size:12px;font-weight:700">Spray duration (seconds)
+            <input id="sprayDurationValue" type="number" min="1" max="30" value="5" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px"/>
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700"><input id="cycleTimerEnabled" type="checkbox" checked style="width:17px;height:17px"/> Automatic emotion timer enabled</label>
+          <label style="display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700"><input id="noFaceFallbackEnabled" type="checkbox" style="width:17px;height:17px"/> Optional fallback when no face is visible</label>
+          <label style="display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700"><input id="unknownFaceFallbackEnabled" type="checkbox" style="width:17px;height:17px"/> Optional fallback when an unknown face appears</label>
+          <label style="display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700"><input id="multipleFacesFallbackEnabled" type="checkbox" style="width:17px;height:17px"/> Optional fallback when multiple faces appear</label>
+          <label style="display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700"><input id="cameraErrorFallbackEnabled" type="checkbox" style="width:17px;height:17px"/> Optional fallback if the camera errors</label>
+          <label style="display:grid;gap:7px;font-size:12px;font-weight:700">Fallback aroma
+            <select id="noFaceFallbackAroma" style="padding:11px;border:1px solid var(--line);border-radius:10px;background:white"><option value="Citrus">Citrus (default fallback)</option><option value="Rosemary">Rosemary (default fallback)</option></select>
+          </label>
+        </div>
+        <div class="note-card" style="margin-top:15px">Each fallback checkbox is saved separately and uses the configured sampling interval and spray duration. When an enabled condition occurs and the timer is due, the selected Citrus or Rosemary fallback may trigger and a notification is created. Fallback is not an emotion prediction; identity-based emotion processing remains blocked until the registered face is verified. Camera-error fallback cannot confirm who is in view, so enable it only if you accept that limitation. Physical spraying requires monitoring consent, connected Arduino hardware, and hardware mode enabled.</div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px"><button class="banner-action" id="saveTimerSettings" type="button">Save timer settings</button><span id="timerSettingsStatus" style="font-size:12px;color:var(--muted)">Loading saved timer settings…</span></div>
+      </article>
+      <article class="card" style="margin-top:18px">
+        <div class="card-header"><div><div class="card-title">Continuous video recording</div><div class="card-subtitle">The camera records continuously and starts a new video file when the selected clip length ends.</div></div><span class="tiny-tag purple">Configurable</span></div>
+        <div class="timer-settings-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+          <label style="display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700"><input id="recordingTimerEnabled" type="checkbox" style="width:17px;height:17px"/> Enable continuous video recording</label>
+          <label style="display:grid;gap:7px;font-size:12px;font-weight:700">Split into a new clip every
+            <div style="display:flex;gap:8px"><input id="recordingDurationValue" type="number" min="1" max="60" value="30" style="min-width:0;width:100%;padding:11px;border:1px solid var(--line);border-radius:10px"/><select id="recordingDurationUnit" style="padding:11px;border:1px solid var(--line);border-radius:10px;background:white"><option value="seconds">Seconds</option><option value="minutes" selected>Minutes</option><option value="hours">Hours</option></select></div>
+          </label>
+        </div>
+        <div class="note-card" style="margin-top:15px">Choose 30 minutes for 30-minute clips, or 1 hour for hour-long clips. Recording starts immediately after you enable and save it. When a clip ends, the next clip starts automatically without an intentional waiting interval. The camera records the visible scene even if the room is empty or an unrecognized person appears. Only emotion detection and aroma spray require the registered face to be verified. Recording requires your consent, monitoring enabled, the PC awake, and Flask running. Videos are stored locally and can be previewed or permanently deleted from Camera Recordings.</div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px"><button class="banner-action" id="saveRecordingSettings" type="button">Save recording settings</button><span id="recordingSettingsStatus" style="font-size:12px;color:var(--muted)">Loading recording settings…</span></div>
+      </article>
+    </section>
+  </main>
+</div>
+
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <button class="nav-link active" data-page="dashboard"><span class="nav-icon">▦</span><span>Home</span></button>
+  <button class="nav-link" data-page="detection"><span class="nav-icon">◎</span><span>Detect</span></button>
+  <button class="nav-link" data-page="wellness"><span class="nav-icon">✧</span><span>Wellness</span></button>
+  <button class="nav-link" data-page="analytics"><span class="nav-icon">▥</span><span>Analytics</span></button>
+  <button class="nav-link" data-page="history"><span class="nav-icon">◷</span><span>History</span></button>
+  <button class="nav-link" data-page="recordings"><span class="nav-icon">▣</span><span>Clips</span></button>
+  <button class="nav-link" data-page="notifications"><span class="nav-icon">♧</span><span>Alerts</span></button>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  const pageDetails = {
+    dashboard: {title: 'Your wellness overview', crumb: 'Dashboard'},
+    detection: {title: 'Emotion detection', crumb: 'Emotion Detection'},
+    wellness: {title: 'Wellness studio', crumb: 'Wellness Studio'},
+    analytics: {title: 'Emotion analytics', crumb: 'Emotion Analytics'},
+    history: {title: 'Emotion history', crumb: 'Emotion History'},
+    recordings: {title: 'Camera recordings', crumb: 'Camera Recordings'},
+    notifications: {title: 'Your notifications', crumb: 'Notifications'},
+    profile: {title: 'My profile', crumb: 'My Profile'},
+    settings: {title: 'Settings', crumb: 'Settings'}
+  };
+  let currentPeriod = 'all';
+  let latestCurrent = {emotion: 'Waiting...', aroma: 'Waiting...', suggestion: 'Waiting for emotion detection.'};
+  let latestWellness = {};
+  let refreshTimer;
+  let breathingInterval = null;
+  let breathingRemaining = 60;
+  let breathingPhaseRemaining = 4;
+  let breathingPhaseIndex = 0;
+  let identityBlockedShown = false;
+  let monitoringEnabled = false;
+  let notificationPollTimer = null;
+  let notificationsInitialized = false;
+  const seenNotificationIds = new Set();
+
+  function applyIdentityBlockedUI() {
+    // Non-blocking status only: keep the dashboard, camera, and notifications visible.
+    latestCurrent = {emotion: 'Other face detected', aroma: 'Fallback timer', suggestion: 'A face other than the enrolled user was detected. A single notification is recorded; any fallback spray follows your saved timer settings.'};
+    ['dashEmotion','dashEmotionBig','detectEmotion','wellnessEmotion'].forEach(id => setText(id, latestCurrent.emotion));
+    ['dashAroma','dashAromaDetail','detectAroma','wellnessAroma'].forEach(id => setText(id, latestCurrent.aroma));
+    ['dashSuggestion','detectSuggestion','wellnessSummary'].forEach(id => setText(id, latestCurrent.suggestion));
+    if (!identityBlockedShown) {
+      showToast('Other face detected. Notification recorded; fallback follows your saved timer settings.');
+      identityBlockedShown = true;
+    }
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    window.clearTimeout(showToast.timer);
+    showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
+  function showPage(name) {
+    if (!pageDetails[name]) return;
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${name}`));
+    document.querySelectorAll('[data-page]').forEach(btn => btn.classList.toggle('active', btn.dataset.page === name));
+    document.getElementById('pageTitle').textContent = pageDetails[name].title;
+    document.getElementById('breadcrumbCurrent').textContent = pageDetails[name].crumb;
+    // Keep one camera stream alive and move its image between page slots to avoid opening the webcam twice.
+    const camera = document.getElementById('liveCamera');
+    const target = name === 'detection' ? document.getElementById('detectionCameraSlot') : document.getElementById('dashboardCameraSlot');
+    if (camera && target && camera.parentElement !== target) {
+      const frame = camera.closest('.camera-frame');
+      if (frame) target.appendChild(frame);
+    }
+    if (name === 'history') loadHistory();
+    if (name === 'recordings') loadRecordings();
+    if (name === 'notifications') { loadNotifications(); loadDailySummary(); }
+    if (name === 'settings') { loadCurrentEmotion(); loadTimerSettings(); loadRecordingSettings(); }
+    if (name === 'analytics') loadAnalytics(currentPeriod);
+    if (name === 'wellness') updateWellness();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  document.querySelectorAll('[data-page]').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
+  document.querySelectorAll('[data-go]').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.go)));
+  document.getElementById('refreshButton').addEventListener('click', refreshDashboard);
+  document.getElementById('historyRefresh').addEventListener('click', loadHistory);
+  document.getElementById('recordingsRefresh').addEventListener('click', loadRecordings);
+  document.getElementById('notificationsRefresh').addEventListener('click', () => { loadNotifications(); loadDailySummary(); });
+  document.getElementById('dailySummaryRefresh').addEventListener('click', loadDailySummary);
+  document.getElementById('notificationQuickButton').addEventListener('click', () => showPage('notifications'));
+  document.getElementById('enableBrowserNotifications').addEventListener('click', enableBrowserNotifications);
+  document.getElementById('monitoringToggle').addEventListener('click', toggleMonitoring);
+  document.querySelectorAll('[data-period]').forEach(btn => btn.addEventListener('click', () => loadAnalytics(btn.dataset.period)));
+  document.getElementById('breathingToggle').addEventListener('click', startBreathingGuide);
+
+  let mindfulInterval = null;
+  let mindfulRemaining = 60;
+
+  function stopMindfulPause(message = 'Pause stopped. Continue whenever you feel ready.') {
+    if (mindfulInterval !== null) {
+      window.clearInterval(mindfulInterval);
+    }
+    mindfulInterval = null;
+
+    const button = document.getElementById('mindfulToggle');
+    if (button) button.textContent = 'Start mindful pause';
+
+    const timer = document.getElementById('mindfulTimer');
+    if (timer) timer.textContent = message;
+  }
+
+  function startMindfulPause() {
+    if (mindfulInterval !== null) {
+      stopMindfulPause();
+      return;
+    }
+
+    if (['Identity not verified', 'Camera stopped', 'Offline'].includes(latestCurrent.emotion)) {
+      showToast('Verify the registered face before using personalized wellness features.');
+      return;
+    }
+
+    mindfulRemaining = 60;
+
+    const button = document.getElementById('mindfulToggle');
+    if (button) button.textContent = 'Stop mindful pause';
+
+    const timer = document.getElementById('mindfulTimer');
+    if (timer) timer.textContent = '60 seconds remaining';
+
+    mindfulInterval = window.setInterval(() => {
+      mindfulRemaining -= 1;
+
+      if (mindfulRemaining <= 0) {
+        stopMindfulPause('One-minute pause complete. Take your time.');
+        return;
+      }
+
+      if (timer) timer.textContent = `${mindfulRemaining} seconds remaining`;
+    }, 1000);
+  }
+
+  document.getElementById('mindfulToggle').addEventListener('click', startMindfulPause);
+  
+  const positiveReminders = [
+    "You are allowed to take things one step at a time.",
+    "Small progress is still progress. Keep going.",
+    "Take a breath. You are doing the best you can.",
+    "You do not have to be perfect to make progress.",
+    "Rest is productive too. Give yourself a moment.",
+    "You deserve the same kindness you give others.",
+    "One difficult moment does not define your whole day.",
+    "Trust yourself. You can handle one step at a time."
+  ];
+
+  let reminderIndex = 0;
+
+  document.getElementById('newReminderBtn').addEventListener('click', () => {
+    if (
+      ['Identity not verified', 'Camera stopped', 'Offline']
+        .includes(latestCurrent.emotion)
+    ) {
+      showToast('Verify the registered face before using personalized wellness features.');
+      return;
+    }
+
+    reminderIndex = (reminderIndex + 1) % positiveReminders.length;
+
+    document.getElementById('positiveReminder').textContent =
+      positiveReminders[reminderIndex];
+  });
+  
+  const shareThoughtsBtn = document.getElementById('shareThoughtsBtn');
+  const thoughtsPanel = document.getElementById('thoughtsPanel');
+  const thoughtsInput = document.getElementById('thoughtsInput');
+  const saveThoughtBtn = document.getElementById('saveThoughtBtn');
+  const thoughtsFeedback = document.getElementById('thoughtsFeedback');
+
+  if (shareThoughtsBtn && thoughtsPanel) {
+    shareThoughtsBtn.addEventListener('click', () => {
+      thoughtsPanel.hidden = !thoughtsPanel.hidden;
+
+      if (!thoughtsPanel.hidden && thoughtsInput) {
+        thoughtsInput.focus();
+      }
+    });
+  }
+
+  if (saveThoughtBtn && thoughtsInput && thoughtsFeedback) {
+    saveThoughtBtn.addEventListener('click', () => {
+      const thought = thoughtsInput.value.trim();
+
+      if (!thought) {
+        thoughtsFeedback.textContent = 'Please write your thoughts first.';
+        return;
+      }
+
+      thoughtsFeedback.textContent = 'Your reflection has been added below.';
+      
+      let savedReflection = document.getElementById('savedReflection');
+
+      if (!savedReflection) {
+        savedReflection = document.createElement('p');
+        savedReflection.id = 'savedReflection';
+        thoughtsFeedback.insertAdjacentElement('afterend', savedReflection);
+      }
+
+      savedReflection.textContent = thought;
+      thoughtsInput.value = '';
+    });
+  }
+
+  function setText(id, value, fallback = '—') {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value === undefined || value === null || value === '' ? fallback : value;
+  }
+  async function getJSON(url) {
+    const response = await fetch(url, {
+      headers: {'Accept': 'application/json'},
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const error = new Error(
+        response.redirected
+          ? 'Your session or face verification is no longer active. Sign in and verify again.'
+          : `Expected JSON from ${url}, but the server returned HTML. Check the Flask route and server log.`
+      );
+      error.status = response.status;
+      throw error;
+    }
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.error || data.message || `Request failed (${response.status})`);
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  }
+  async function loadCurrentEmotion() {
+    try {
+      const data = await getJSON('/api/current');
+      identityBlockedShown = false;
+      latestCurrent = {emotion: data.emotion || 'Waiting...', aroma: data.aroma || 'Waiting...', suggestion: data.suggestion || 'Waiting for recommendation.'};
+      latestWellness = data.wellness || {};
+      monitoringEnabled = Boolean(data.monitoring_enabled);
+      setText('cameraStatus', data.camera_status || 'Camera service running');
+      setText('monitoringBadge', monitoringEnabled ? 'Monitoring on' : 'Monitoring paused');
+      const monitoringButton = document.getElementById('monitoringToggle');
+      if (monitoringButton) monitoringButton.textContent = monitoringEnabled ? 'Pause monitoring, recording & spray' : 'Enable monitoring, recording & spray';
+      setText('monitoringHelp', monitoringEnabled ? 'Monitoring is ON. Only frames with one currently recognized, opted-in face are recorded. New spray commands are blocked as soon as identity becomes uncertain.' : 'Monitoring is PAUSED. Face matching may continue in memory, but emotion processing, saved video clips and spray commands are off.');
+      setText('dashEmotion', latestCurrent.emotion);
+      setText('dashAroma', latestCurrent.aroma);
+      setText('dashEmotionBig', latestCurrent.emotion);
+      setText('dashAromaDetail', latestCurrent.aroma);
+      setText('dashSuggestion', latestCurrent.suggestion);
+      setText('detectEmotion', latestCurrent.emotion);
+      setText('detectAroma', latestCurrent.aroma);
+      setText('detectSuggestion', latestCurrent.suggestion);
+      setText('wellnessEmotion', latestCurrent.emotion);
+      setText('wellnessSummary', latestCurrent.suggestion);
+      setText('wellnessAroma', latestCurrent.aroma);
+      updateWellness();
+    } catch (error) {
+      console.error('Current emotion request failed:', error);
+      if (error.status === 403) { applyIdentityBlockedUI(); return; }
+      setText('dashEmotion', 'Offline');
+      setText('dashEmotionBig', 'Offline');
+      setText('detectEmotion', 'Offline');
+      setText('wellnessEmotion', 'Offline');
+      showToast('Cannot read emotion status from Flask. Check that python app.py is running.');
+    }
+  }
+  async function loadTotal() {
+    try {
+      const data = await getJSON('/api/analytics/overall');
+      setText('dashTotal', data.total ?? 0, '0');
+      renderChart('dashboardChart', data.emotion_counts || {});
+    } catch (error) { console.error('Overall analytics request failed:', error); if (error.status === 403) applyIdentityBlockedUI(); }
+  }
+  async function loadAnalytics(period = currentPeriod) {
+    currentPeriod = period;
+    document.querySelectorAll('[data-period]').forEach(btn => btn.classList.toggle('active', btn.dataset.period === period));
+    const periodNames = {today: 'Today', week: 'This week', month: 'This month', all: 'All time'};
+    setText('selectedPeriod', periodNames[period] || 'All time');
+    try {
+      const data = await getJSON(`/api/analytics?period=${encodeURIComponent(period)}`);
+      const counts = data.emotion_counts || {};
+      const emotions = Object.keys(counts);
+      setText('totalDetections', data.total ?? 0, '0');
+      setText('differentEmotions', emotions.length, '0');
+      let leader = '—', top = 0;
+      emotions.forEach(emotion => { if (Number(counts[emotion]) > top) { top = Number(counts[emotion]); leader = emotion; } });
+      setText('mostDetected', leader);
+      renderChart('analyticsChart', counts);
+    } catch (error) {
+      console.error('Analytics request failed:', error);
+      if (error.status === 403) { applyIdentityBlockedUI(); return; }
+      const chart = document.getElementById('analyticsChart');
+      if (chart) chart.innerHTML = '<div class="empty-state">Could not load analytics. Check the Flask backend.</div>';
+    }
+  }
+  function renderChart(targetId, counts) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    target.replaceChildren();
+    const emotions = ['Happy', 'Neutral', 'Sad', 'Angry', 'Fear', 'Surprise', 'Disgust'];
+    const maxCount = Math.max(1, ...emotions.map(e => Number(counts[e] || 0)));
+    const total = Object.values(counts).reduce((sum, n) => sum + Number(n || 0), 0);
+    if (!total) { target.innerHTML = '<div class="empty-state">No saved emotion records yet. Start emotion detection to build your report.</div>'; return; }
+    emotions.forEach(emotion => {
+      const count = Number(counts[emotion] || 0);
+      const row = document.createElement('div'); row.className = 'chart-row';
+      const label = document.createElement('div'); label.className = 'chart-label'; label.textContent = emotion;
+      const track = document.createElement('div'); track.className = 'bar-background';
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.width = `${(count / maxCount) * 100}%`; track.appendChild(bar);
+      const value = document.createElement('div'); value.className = 'count'; value.textContent = String(count);
+      row.append(label, track, value); target.appendChild(row);
+    });
+  }
+  async function loadHistory() {
+    const table = document.getElementById('historyTable');
+    if (!table) return;
+    try {
+      const data = await getJSON('/api/history');
+      table.replaceChildren();
+      if (!Array.isArray(data) || data.length === 0) {
+        const row = document.createElement('tr'); const cell = document.createElement('td'); cell.colSpan = 4; cell.className = 'empty-state'; cell.textContent = 'No emotion history yet. Confirmed recommendations will appear here.'; row.appendChild(cell); table.appendChild(row); return;
+      }
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        const emotionCell = document.createElement('td'); const pill = document.createElement('span'); pill.className = 'emotion-pill'; pill.textContent = item.emotion || '—'; emotionCell.appendChild(pill);
+        [item.aroma, item.suggestion, item.detected_at].forEach(value => { const cell = document.createElement('td'); cell.textContent = value || '—'; row.appendChild(cell); });
+        row.insertBefore(emotionCell, row.firstChild); table.appendChild(row);
+      });
+    } catch (error) {
+      console.error('History request failed:', error);
+      if (error.status === 403) { applyIdentityBlockedUI(); return; }
+      table.innerHTML = '<tr><td colspan="4" class="empty-state">Could not load history. Check the Flask backend.</td></tr>';
+    }
+  }
+  
+const aromaFirebaseConfig = {
+  apiKey: "AIzaSyA7FwtVMKvFe_Ub1qZHKiY5MkZ1dM3TdX0",
+  authDomain: "smart-aromasense.firebaseapp.com",
+  projectId: "smart-aromasense",
+  storageBucket: "smart-aromasense.firebasestorage.app",
+  messagingSenderId: "32684145893",
+  appId: "1:32684145893:web:0829f456de9943f2d5e80c",
+  measurementId: "G-6M1D25WWYJ"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(aromaFirebaseConfig);
+}
+
+const aromaMessaging = firebase.messaging();
+
+aromaMessaging.onMessage((payload) => {
+  const title =
+    payload.notification?.title || "Smart AromaSense";
+
+  const body =
+    payload.notification?.body ||
+    "You have a new wellness notification.";
+
+  if (
+    "Notification" in window &&
+    Notification.permission === "granted"
+  ) {
+    new Notification(title, {
+      body: body,
+      icon: "/static/favicon.ico"
+    });
+  } else {
+    showToast(`${title}: ${body}`);
+  }
+});
+
+const aromaVapidKey =
+  "BG0aaxpsiiMH4Mq3zk77gu68AzFuqQyBn0x_cfjLXyuVvO3qyB-UNijas0vPLLK8RWK5HZUlfP1GQ9BgRO0W27Y";
+
+  
+
+async function enableBrowserNotifications() {
+  if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+    showToast('This browser does not support push notifications.');
+    return;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== 'granted') {
+      showToast('Notification permission was not granted.');
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.register(
+      '/firebase-messaging-sw.js'
+    );
+
+    const token = await aromaMessaging.getToken({
+      vapidKey: aromaVapidKey,
+      serviceWorkerRegistration: registration
+    });
+
+    if (!token) {
+      throw new Error('Firebase push token was not generated.');
+    }
+
+    const response = await fetch('/api/notifications/fcm-token', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ token })
+    });
+
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(
+        response.redirected
+          ? 'Your login session expired. Sign in again, then enable notifications.'
+          : 'The Flask push-token API is missing or returned HTML. Restart the updated app.py.'
+      );
+    }
+    const result = await response.json();
+    if (!response.ok || !result.ok) {
+      throw new Error(result.error || result.message || `Registration failed (${response.status})`);
+    }
+
+    showToast('Browser permission granted and token saved. Firebase Admin credentials are still needed for server-initiated push delivery.');
+    console.log('Firebase token registered successfully.');
+  } catch (error) {
+    console.error('Firebase notification setup failed:', error);
+    showToast(error.message || 'Could not enable push notifications.');
+  }
+}
+
+
+
+  async function loadDailySummary() {
+    try {
+      const data = await getJSON('/api/daily-summary');
+      setText('dailySummaryTotal', data.total ?? 0, '0');
+      setText('dailySummaryTopEmotion', data.top_emotion || '—');
+      setText('dailySummaryTopAroma', data.top_aroma || '—');
+      setText('dailySummaryNote', `${data.date || 'Today'} · ${data.note || ''}`);
+      renderChart('dailySummaryChart', data.emotion_counts || {});
+    } catch (error) {
+      if (error.status === 403) { applyIdentityBlockedUI(); return; }
+      console.error('Daily summary request failed:', error);
+      setText('dailySummaryNote', 'Could not load today’s report. Check the Flask service.');
+      const chart = document.getElementById('dailySummaryChart');
+      if (chart) chart.innerHTML = '<div class="empty-state">Could not load daily analysis.</div>';
+    }
+  }
+
+  async function loadNotifications() {
+    const list = document.getElementById('notificationsList');
+    if (!list) return;
+    try {
+      const data = await getJSON('/api/notifications');
+      const unread = Number(data.unread || 0);
+      ['notificationCount','notificationTopCount'].forEach(id => {
+        const badge = document.getElementById(id);
+        if (!badge) return;
+        badge.textContent = unread > 99 ? '99+' : String(unread);
+        badge.hidden = unread === 0;
+      });
+      list.replaceChildren();
+      const items = Array.isArray(data.notifications) ? data.notifications : [];
+      if (!items.length) {
+        const empty = document.createElement('div'); empty.className = 'card empty-state'; empty.textContent = 'No notifications yet. A playful wellness nudge appears after a confirmed recommendation; the daily report is scheduled after 8 PM.'; list.appendChild(empty);
+      }
+      items.forEach(item => {
+        const card = document.createElement('article'); card.className = 'notification-card' + (item.is_read ? '' : ' unread');
+        const icon = document.createElement('div'); icon.className = 'notification-symbol'; icon.textContent = item.notification_type === 'daily_report' ? '📊' : '💌';
+        const copy = document.createElement('div'); copy.className = 'notification-copy';
+        const title = document.createElement('h3'); title.textContent = item.title || 'Wellness nudge';
+        const message = document.createElement('p'); message.textContent = item.message || '';
+        const meta = document.createElement('div'); meta.className = 'notification-meta'; meta.textContent = `${item.created_at || ''} · ${item.notification_type === 'daily_report' ? 'Daily report' : 'Personal nudge'}`;
+        copy.append(title, message, meta); card.append(icon, copy);
+        if (!item.is_read) {
+          const read = document.createElement('button'); read.type = 'button'; read.textContent = 'Mark read';
+          read.addEventListener('click', async () => { try { await fetch(`/api/notifications/${item.id}/read`, {method:'POST'}); loadNotifications(); } catch (e) { showToast('Could not mark the notification as read.'); } });
+          card.appendChild(read);
+        }
+        list.appendChild(card);
+        if (notificationsInitialized && !seenNotificationIds.has(Number(item.id))) {
+          showToast(`${item.title || 'New wellness nudge'}: ${item.message || ''}`);
+          if ('Notification' in window && Notification.permission === 'granted') { try { new Notification(item.title || 'Smart Aroma', {body: item.message || ''}); } catch (e) {} }
+        }
+        seenNotificationIds.add(Number(item.id));
+      });
+      notificationsInitialized = true;
+    } catch (error) {
+      if (error.status === 403) { applyIdentityBlockedUI(); return; }
+      console.error('Notifications request failed:', error);
+      list.innerHTML = '<div class="card empty-state">Could not load notifications. Check the Flask service and live face verification.</div>';
+    }
+  }
+
+  function createRecordingCard(item) {
+    const signature = JSON.stringify([
+      item.file_name || '', item.started_at || '', item.ended_at || '',
+      Number(item.duration_seconds || 0), Number(item.frame_count || 0), item.url || '', item.thumbnail_url || ''
+    ]);
+    const card = document.createElement('article');
+    card.className = 'recording-card';
+    card.dataset.recordingId = String(item.id);
+    card.dataset.recordingSignature = signature;
+
+    const video = document.createElement('video');
+    video.controls = true;
+    // Do not reload long video files on every polling pass. The poster provides preview;
+    // the actual clip is requested only when the user presses Play.
+    video.preload = 'none';
+    video.poster = item.thumbnail_url || '';
+    video.src = item.url;
+    video.playsInline = true;
+    video.setAttribute('aria-label', `Preview and play ${item.file_name || 'recorded video'}`);
+
+    const playbackStatus = document.createElement('p');
+    playbackStatus.className = 'recording-playback-status';
+    playbackStatus.style.cssText = 'display:none;padding:8px 14px;font-size:11px;line-height:1.5;color:#716d84;background:#faf9ff;border-top:1px solid #eceaf4';
+    let loadingWarningTimer = null;
+    video.addEventListener('play', () => {
+      if (loadingWarningTimer) window.clearTimeout(loadingWarningTimer);
+      playbackStatus.style.display = 'block';
+      playbackStatus.textContent = 'Loading video…';
+      loadingWarningTimer = window.setTimeout(() => {
+        if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA && !video.error) {
+          playbackStatus.textContent = 'Video is still loading. Check the Flask terminal for the recording file path and encoder errors.';
+        }
+      }, 15000);
+    });
+    video.addEventListener('loadeddata', () => {
+      if (loadingWarningTimer) window.clearTimeout(loadingWarningTimer);
+      playbackStatus.style.display = 'none';
+    });
+    video.addEventListener('error', () => {
+      if (loadingWarningTimer) window.clearTimeout(loadingWarningTimer);
+      const code = video.error ? video.error.code : 'unknown';
+      playbackStatus.style.display = 'block';
+      playbackStatus.textContent = `Video could not be loaded or decoded (media error ${code}). Check that the MP4 has finalized correctly.`;
+    });
+
+    const details = document.createElement('div');
+    details.className = 'recording-details';
+    const title = document.createElement('h3');
+    title.textContent = item.file_name || 'Camera clip';
+    const meta = document.createElement('p');
+    meta.textContent = `Started: ${item.started_at || '—'}\nDuration: ${Number(item.duration_seconds || 0).toFixed(1)} seconds\nFrames saved: ${item.frame_count || 0}`;
+    meta.style.whiteSpace = 'pre-line';
+    details.append(title, meta);
+
+    const actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;justify-content:flex-end;padding:0 14px 14px';
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'soft-button';
+    deleteButton.textContent = 'Delete video';
+    deleteButton.addEventListener('click', async () => {
+      if (!window.confirm(`Permanently delete recording "${item.file_name || 'video'}"?`)) return;
+      deleteButton.disabled = true;
+      deleteButton.textContent = 'Deleting…';
+      try {
+        const response = await fetch(`/api/recordings/${item.id}`, { method: 'DELETE', headers: { 'Accept': 'application/json' } });
+        const result = await response.json();
+        if (!response.ok || !result.ok) throw new Error(result.message || `Delete failed (${response.status})`);
+        showToast('Recording deleted.');
+        await loadRecordings();
+      } catch (error) {
+        if (error.status === 403) { applyIdentityBlockedUI(); return; }
+        showToast(error.message || 'Could not delete recording.');
+        deleteButton.disabled = false;
+        deleteButton.textContent = 'Delete video';
+      }
+    });
+    actions.appendChild(deleteButton);
+    card.append(video, playbackStatus, details, actions);
+    return card;
+  }
+
+  async function loadRecordings() {
+    const list = document.getElementById('recordingsList');
+    if (!list || loadRecordings.inProgress) return;
+    loadRecordings.inProgress = true;
+    try {
+      const items = await getJSON('/api/recordings');
+      if (!Array.isArray(items)) throw new Error('Recording list response was not a list.');
+
+      // Keep existing video elements mounted during 3-second polling. Recreating them
+      // repeatedly restarts poster/metadata requests and causes a black loading player.
+      const existingCards = new Map(
+        [...list.querySelectorAll('.recording-card[data-recording-id]')]
+          .map(card => [String(card.dataset.recordingId), card])
+      );
+      const incoming = new Map(items.map(item => [String(item.id), item]));
+      for (const [id, card] of existingCards) {
+        if (!incoming.has(id)) card.remove();
+      }
+
+      if (items.length === 0) {
+        if (!list.querySelector('.empty-state') || list.querySelector('.recording-card')) {
+          const empty = document.createElement('div');
+          empty.className = 'card empty-state';
+          empty.textContent = 'No saved clips yet. Enable continuous video recording in Settings. A clip appears here after it has been finalized.';
+          list.replaceChildren(empty);
+        }
+        return;
+      }
+      list.querySelectorAll('.empty-state').forEach(node => node.remove());
+
+      // API order is newest-first. Only genuinely new or changed records get new DOM nodes.
+      for (const item of [...items].reverse()) {
+        const id = String(item.id);
+        const signature = JSON.stringify([
+          item.file_name || '', item.started_at || '', item.ended_at || '',
+          Number(item.duration_seconds || 0), Number(item.frame_count || 0), item.url || '', item.thumbnail_url || ''
+        ]);
+        const oldCard = existingCards.get(id);
+        if (oldCard && oldCard.dataset.recordingSignature === signature) continue;
+        const newCard = createRecordingCard(item);
+        if (oldCard) oldCard.replaceWith(newCard);
+        else list.prepend(newCard);
+      }
+    } catch (error) {
+      if (error.status === 403) { applyIdentityBlockedUI(); return; }
+      console.error('Recordings request failed:', error);
+      // Preserve any existing cards and playback state during temporary API failures.
+      if (!list.querySelector('.recording-card')) {
+        list.innerHTML = '<div class="card empty-state">Could not load recordings. Check the Flask service and browser console.</div>';
+      }
+    } finally {
+      loadRecordings.inProgress = false;
+    }
+  }
+
+  async function toggleMonitoring() {
+    const enabled = !monitoringEnabled;
+    if (enabled && !window.confirm('Enable camera monitoring? If you also enable scheduled video recording in Settings, clips may capture the room or anyone visible even when no face is recognized. Clips are saved locally. Emotion-based spray still requires a verified registered face. Continue?')) return;
+    const button = document.getElementById('monitoringToggle'); if (button) button.disabled = true;
+    try {
+      const response = await fetch('/api/monitoring/toggle', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({enabled})});
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.message || 'Could not change monitoring state.');
+      monitoringEnabled = enabled;
+      setText('monitoringBadge', monitoringEnabled ? 'Monitoring on' : 'Monitoring paused');
+      if (button) button.textContent = monitoringEnabled ? 'Pause monitoring, recording & spray' : 'Enable monitoring, recording & spray';
+      setText('monitoringHelp', monitoringEnabled ? 'Monitoring is ON. Only frames with one currently recognized, opted-in face are recorded.' : 'Monitoring is PAUSED. Emotion processing, new saved video clips and spray commands are off.');
+      showToast(data.message || 'Monitoring setting updated.');
+      await loadCurrentEmotion();
+    } catch (error) { showToast(error.message || 'Could not change monitoring setting.'); }
+    finally { if (button) button.disabled = false; }
+  }
+
+  function updateWellness() {
+    const blocked = ['Identity not verified', 'Camera stopped', 'Offline'].includes(latestCurrent.emotion);
+    if (blocked) {
+      ['breathingSuggestion','meditationSuggestion','musicSuggestion','quoteSuggestion','reflectionSuggestion'].forEach(id => setText(id, 'Wellness suggestions are paused until a registered face is verified.'));
+      setText('wellnessAroma', 'Blocked until a valid emotion is available.');
+            const musicLink = document.getElementById('spotifyMusicLink');
+      if (musicLink) {
+        musicLink.href = 'https://open.spotify.com/search/relaxing%20music';
+      }
+      return;
+    }
+    setText('breathingSuggestion', latestWellness.breathing, 'Try a few comfortable, natural breaths. Stop if uncomfortable.');
+    setText('meditationSuggestion', latestWellness.meditation, 'Take a quiet mindful pause.');
+    setText('musicSuggestion', latestWellness.music, 'Choose music you enjoy, or take a quiet break.');
+    
+    const musicLink = document.getElementById('spotifyMusicLink');
+    const emotion = String(latestCurrent.emotion || '').toLowerCase().trim();
+
+    const musicByEmotion = {
+      happy: {
+        text: 'Keep your good energy going with feel-good music!',
+        url: 'https://open.spotify.com/search/feel%20good%20music'
+      },
+      sad: {
+        text: 'Try some gentle, comforting acoustic music.',
+        url: 'https://open.spotify.com/search/comforting%20acoustic%20music'
+      },
+      angry: {
+        text: 'Take a breath with calm, relaxing music.',
+        url: 'https://open.spotify.com/search/calm%20relaxing%20music'
+      },
+      neutral: {
+        text: 'Explore ambient music for a calm, focused moment.',
+        url: 'https://open.spotify.com/search/ambient%20focus%20music'
+      }
+    };
+
+    const musicSuggestion = musicByEmotion[emotion];
+
+    if (musicLink && musicSuggestion) {
+      musicLink.href = musicSuggestion.url;
+    }
+
+    setText('quoteSuggestion', latestWellness.quote, 'Take things one step at a time.');
+    setText('wellnessAroma', latestWellness.aroma || latestCurrent.aroma, 'Waiting for an aroma suggestion.');
+    setText('reflectionSuggestion', latestWellness.reflection, 'Notice how you feel and choose a next step that feels right for you.');
+  }
+
+  function renderBreathingGuide() {
+    const phase = breathingPhaseIndex === 0 ? 'Breathe in gently' : 'Breathe out slowly';
+    const orb = document.getElementById('breathingOrb');
+    const step = document.getElementById('breathingStep');
+    const time = document.getElementById('breathingTime');
+    if (step) step.textContent = `${phase} · ${breathingPhaseRemaining}s`;
+    if (time) time.textContent = `${breathingRemaining} seconds remaining`;
+    if (orb) {
+      orb.classList.toggle('inhale', breathingPhaseIndex === 0);
+      orb.classList.toggle('exhale', breathingPhaseIndex === 1);
+    }
+  }
+
+  
+const aromaDefaults = {
+  Happy: "Citrus",
+  Sad: "Lavender",
+  Angry: "Rosemary",
+  Neutral: "Eucalyptus"
+};
+
+const aromaKey = "smartAromaSenseAssignments";
+
+function getAromaAssignments() {
+  try {
+    return {
+      ...aromaDefaults,
+
+      ...JSON.parse(localStorage.getItem(aromaKey) || "{}")
+    };
+  } catch {
+    return { ...aromaDefaults };
+  }
+}
+
+function saveAromaAssignment(emotion, aroma) {
+  const blockedEmotions = [
+    "Identity not verified",
+    "Camera stopped",
+    "Offline"
+  ];
+
+  if (blockedEmotions.includes(latestCurrent.emotion)) {
+    showToast("Please verify the registered face first.");
+    return;
+  }
+
+  const assignments = getAromaAssignments();
+  assignments[emotion] = aroma.trim();
+
+  localStorage.setItem(aromaKey, JSON.stringify(assignments));
+
+  const currentEmotion = document.getElementById("aromaMood").value;
+  const currentAroma = assignments[currentEmotion];
+
+  setText(
+    "wellnessAroma",
+    `Assigned aroma for ${currentEmotion}: ${currentAroma}`
+  );
+
+  showToast(`${emotion} aroma updated to ${aroma.trim()} successfully.`);
+}
+
+
+document.getElementById("saveAromaPreference").addEventListener("click", () => {
+  const emotion = document.getElementById("aromaMood").value;
+  const aroma = document.getElementById("aromaPreference").value;
+
+  if (aroma === "Other") {
+    showToast("Please select or enter an aroma name.");
+    return;
+  }
+
+  saveAromaAssignment(emotion, aroma);
+});
+
+
+  function stopBreathingGuide(message = 'Guide stopped. Resume normal breathing whenever you are ready.') {
+    if (breathingInterval !== null) window.clearInterval(breathingInterval);
+    breathingInterval = null;
+    const button = document.getElementById('breathingToggle');
+    const orb = document.getElementById('breathingOrb');
+    if (button) button.textContent = 'Start 60-second guide';
+    if (orb) orb.classList.remove('inhale', 'exhale');
+    setText('breathingStep', message);
+    setText('breathingTime', '60 seconds');
+  }
+
+  function startBreathingGuide() {
+    if (breathingInterval !== null) {
+      stopBreathingGuide();
+      return;
+    }
+    if (['Identity not verified', 'Camera stopped', 'Offline'].includes(latestCurrent.emotion)) {
+      showToast('Verify the registered face before using personalized wellness features.');
+      return;
+    }
+    breathingRemaining = 60;
+    breathingPhaseIndex = 0;
+    breathingPhaseRemaining = 4;
+    const button = document.getElementById('breathingToggle');
+    if (button) button.textContent = 'Stop breathing guide';
+    renderBreathingGuide();
+    breathingInterval = window.setInterval(() => {
+      breathingRemaining -= 1;
+      breathingPhaseRemaining -= 1;
+      if (breathingPhaseRemaining <= 0) {
+        breathingPhaseIndex = 1 - breathingPhaseIndex;
+        breathingPhaseRemaining = breathingPhaseIndex === 0 ? 4 : 6;
+      }
+      if (breathingRemaining <= 0) {
+        stopBreathingGuide('One minute complete. Continue at your own comfortable pace.');
+        return;
+      }
+      renderBreathingGuide();
+    }, 1000);
+  }
+  async function refreshDashboard() {
+    const button = document.getElementById('refreshButton');
+    if (button) button.style.transform = 'rotate(180deg)';
+    await Promise.allSettled([loadCurrentEmotion(), loadTotal(), loadAnalytics(currentPeriod), loadHistory(), loadNotifications(), loadDailySummary()]);
+    if (button) window.setTimeout(() => button.style.transform = '', 250);
+  }
+  function intervalToUi(seconds) {
+    if (seconds % 3600 === 0) {
+      document.getElementById('timerIntervalValue').value = String(seconds / 3600);
+      document.getElementById('timerIntervalUnit').value = 'hours';
+    } else if (seconds % 60 === 0) {
+      document.getElementById('timerIntervalValue').value = String(seconds / 60);
+      document.getElementById('timerIntervalUnit').value = 'minutes';
+    } else {
+      document.getElementById('timerIntervalValue').value = String(seconds);
+      document.getElementById('timerIntervalUnit').value = 'seconds';
+    }
+  }
+
+  function secondsToTimerFields(seconds, valueId, unitId, allowHours = true) {
+    const v = document.getElementById(valueId);
+    const u = document.getElementById(unitId);
+    if (!v || !u) return;
+    if (allowHours && seconds % 3600 === 0) {
+      v.value = String(seconds / 3600); u.value = 'hours';
+    } else if (seconds % 60 === 0) {
+      v.value = String(seconds / 60); u.value = 'minutes';
+    } else {
+      v.value = String(seconds); u.value = 'seconds';
+    }
+  }
+
+  function timerFieldsToSeconds(valueId, unitId) {
+    const value = Number(document.getElementById(valueId).value);
+    const unit = document.getElementById(unitId).value;
+    const multiplier = unit === 'hours' ? 3600 : unit === 'minutes' ? 60 : 1;
+    if (!Number.isFinite(value) || value <= 0) return NaN;
+    return Math.round(value * multiplier);
+  }
+
+  function describeClipDuration(seconds) {
+    if (seconds % 3600 === 0) return `${seconds / 3600} hour${seconds === 3600 ? '' : 's'}`;
+    if (seconds % 60 === 0) return `${seconds / 60} minute${seconds === 60 ? '' : 's'}`;
+    return `${seconds} second${seconds === 1 ? '' : 's'}`;
+  }
+
+  async function loadRecordingSettings() {
+    try {
+      const data = await getJSON('/api/timer-settings');
+      document.getElementById('recordingTimerEnabled').checked = !!data.recording_timer_enabled;
+      const duration = Number(data.recording_duration_seconds || 1800);
+      secondsToTimerFields(duration, 'recordingDurationValue', 'recordingDurationUnit', true);
+      const status = document.getElementById('recordingSettingsStatus');
+      if (status) {
+        status.textContent = !data.recording_timer_enabled
+          ? 'Continuous recording is off.'
+          : !data.monitoring_enabled
+            ? 'Recording is enabled in settings, but monitoring consent is OFF. Enable monitoring to start recording.'
+            : `${data.recording_status || 'Continuous recording is enabled.'} Clip length: ${describeClipDuration(duration)}. A clip appears in Camera Recordings after it is finalized.`;
+      }
+    } catch (error) {
+      const status = document.getElementById('recordingSettingsStatus');
+      if (status) status.textContent = error.status === 403 ? 'Please log in and complete face verification to manage recording settings.' : 'Could not load recording settings. Check Flask.';
+    }
+  }
+
+  async function saveRecordingSettings() {
+    const durationSeconds = timerFieldsToSeconds('recordingDurationValue', 'recordingDurationUnit');
+    const status = document.getElementById('recordingSettingsStatus');
+    if (!Number.isFinite(durationSeconds) || durationSeconds < 1 || durationSeconds > 3600) {
+      status.textContent = 'Clip duration must be from 1 second to 60 minutes (1 hour).'; return;
+    }
+    const enabled = document.getElementById('recordingTimerEnabled').checked;
+    const payload = {
+      recording_timer_enabled: enabled,
+      // Legacy compatibility only; backend ignores this as a waiting interval.
+      recording_interval_seconds: durationSeconds,
+      recording_duration_seconds: durationSeconds
+    };
+    status.textContent = 'Saving…';
+    try {
+      const response = await fetch('/api/timer-settings', {
+        method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.message || `Save failed (${response.status})`);
+      status.textContent = enabled
+        ? `Continuous recording enabled. Clips rotate every ${describeClipDuration(durationSeconds)} and start immediately.`
+        : 'Continuous recording saved as OFF.';
+      showToast(enabled ? 'Continuous recording enabled.' : 'Continuous recording stopped.');
+      await loadRecordingSettings();
+      await loadRecordings();
+    } catch (error) {
+      status.textContent = error.message || 'Could not save recording settings.';
+    }
+  }
+
+
+  async function loadTimerSettings() {
+    try {
+      const data = await getJSON('/api/timer-settings');
+      intervalToUi(Number(data.interval_seconds || 3600));
+      document.getElementById('sprayDurationValue').value = String(data.spray_duration_seconds || 5);
+      document.getElementById('cycleTimerEnabled').checked = !!data.timer_enabled;
+      document.getElementById('noFaceFallbackEnabled').checked = !!data.fallback_enabled;
+      document.getElementById('unknownFaceFallbackEnabled').checked = !!data.fallback_unknown_enabled;
+      document.getElementById('multipleFacesFallbackEnabled').checked = !!data.fallback_multiple_enabled;
+      document.getElementById('cameraErrorFallbackEnabled').checked = !!data.fallback_camera_error_enabled;
+      document.getElementById('noFaceFallbackAroma').value = data.fallback_aroma || 'Citrus';
+      const remaining = data.seconds_until_next_cycle;
+      const timerStatus = document.getElementById('timerSettingsStatus');
+      if (timerStatus) {
+        timerStatus.textContent = `Saved. ${remaining === null ? 'Timer is off.' : `Next sampling cycle in ${Math.floor(remaining/3600)}h ${Math.floor((remaining%3600)/60)}m ${remaining%60}s.`} ${data.hardware_enabled ? '' : 'Arduino hardware is disabled; commands will be dry-run only.'}`;
+      }
+    } catch (error) {
+      const timerStatus = document.getElementById('timerSettingsStatus');
+      if (timerStatus) timerStatus.textContent = error.status === 403 ? 'Verify your registered face first.' : 'Could not load timer settings. Check Flask.';
+    }
+  }
+
+  async function saveTimerSettings() {
+    const raw = Number(document.getElementById('timerIntervalValue').value);
+    const unit = document.getElementById('timerIntervalUnit').value;
+    const multiplier = unit === 'hours' ? 3600 : unit === 'minutes' ? 60 : 1;
+    const intervalSeconds = Math.round(raw * multiplier);
+    const payload = {
+      interval_seconds: intervalSeconds,
+      spray_duration_seconds: Number(document.getElementById('sprayDurationValue').value),
+      timer_enabled: document.getElementById('cycleTimerEnabled').checked,
+      fallback_enabled: document.getElementById('noFaceFallbackEnabled').checked,
+      fallback_unknown_enabled: document.getElementById('unknownFaceFallbackEnabled').checked,
+      fallback_multiple_enabled: document.getElementById('multipleFacesFallbackEnabled').checked,
+      fallback_camera_error_enabled: document.getElementById('cameraErrorFallbackEnabled').checked,
+      fallback_aroma: document.getElementById('noFaceFallbackAroma').value
+    };
+    const status = document.getElementById('timerSettingsStatus');
+    if (!Number.isFinite(raw) || raw <= 0) { status.textContent = 'Enter a positive timer interval.'; return; }
+    status.textContent = 'Saving…';
+    try {
+      const response = await fetch('/api/timer-settings', {
+        method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.message || `Save failed (${response.status})`);
+      status.textContent = result.message || 'Timer settings saved.';
+      showToast('Timer settings saved.');
+      await loadTimerSettings();
+      await loadCurrentEmotion();
+    } catch (error) {
+      status.textContent = error.message || 'Could not save settings.';
+      showToast(status.textContent);
+    }
+  }
+  document.getElementById('saveTimerSettings').addEventListener('click', saveTimerSettings);
+  document.getElementById('saveRecordingSettings').addEventListener('click', saveRecordingSettings);
+
+  // Small Reflection: save this card's content locally in this browser only.
+  (function initSmallReflectionCard() {
+    const focus = document.getElementById('reflectionFocus');
+    const thought = document.getElementById('reflectionThought');
+    const saveButton = document.getElementById('saveSmallReflection');
+    const savedTag = document.getElementById('reflectionSavedTag');
+    const status = document.getElementById('reflectionSaveStatus');
+    if (!focus || !thought || !saveButton || !savedTag || !status) return;
+    try {
+      const saved = JSON.parse(localStorage.getItem('smartAromaSmallReflection') || 'null');
+      if (saved) {
+        if (saved.focus) focus.value = saved.focus;
+        if (typeof saved.thought === 'string') thought.value = saved.thought;
+        savedTag.textContent = saved.focus || focus.value;
+      }
+    } catch (_) { /* Storage may be disabled; allow the form to work for this session. */ }
+    // Account-backed saving is attached by initProfileDashboard below.
+  })();
+
+  function setDate() {
+    const el = document.getElementById('todayDate');
+    el.textContent = '📅 ' + new Intl.DateTimeFormat(undefined, {weekday: 'short', month: 'short', day: 'numeric'}).format(new Date());
+  }
+  setDate();
+  // Initial loading is separated from periodic updates to avoid repeatedly refreshing all reports every few seconds.
+  refreshDashboard();
+  refreshTimer = window.setInterval(() => { loadCurrentEmotion(); }, 4000);
+  notificationPollTimer = window.setInterval(() => { loadNotifications(); if (document.getElementById('page-notifications').classList.contains('active')) loadDailySummary(); if (document.getElementById('page-recordings').classList.contains('active')) loadRecordings(); if (document.getElementById('page-settings').classList.contains('active')) loadRecordingSettings(); }, 3000);
+  window.addEventListener('beforeunload', () => { window.clearInterval(refreshTimer); window.clearInterval(notificationPollTimer); });
+
+  // Profile and activity values are loaded from the signed-in account database.
+  (function initProfileDashboard() {
+    const el = id => document.getElementById(id);
+    let currentProfile = null;
+    const put = (id, value) => { if (el(id)) el(id).textContent = value || 'Not provided'; };
+
+    function renderReflections(items) {
+      const list = el('profileRecentReflections');
+      if (!list) return;
+      list.replaceChildren();
+      if (!items.length) {
+        const empty = document.createElement('p');
+        empty.className = 'profile-empty-reflection';
+        empty.textContent = 'No saved reflections in this account yet. Add one in Wellness Studio.';
+        list.appendChild(empty);
+        return;
+      }
+      items.forEach(item => {
+        const row = document.createElement('div'); row.className = 'profile-recent-item';
+        const dot = document.createElement('span'); dot.className = 'profile-recent-dot';
+        const note = document.createElement('span'); note.className = 'profile-recent-text';
+        note.textContent = item.thought || item.focus || 'Reflection';
+        const date = document.createElement('span'); date.className = 'profile-recent-date';
+        date.textContent = item.created_at ? new Date(item.created_at.replace(' ', 'T')).toLocaleDateString(undefined, {day:'numeric', month:'short', year:'numeric'}) : '';
+        row.append(dot, note, date); list.appendChild(row);
+      });
+    }
+
+    async function loadAccountProfile() {
+      try {
+        const response = await fetch('/api/profile', {credentials:'same-origin', cache:'no-store'});
+        const data = await response.json();
+        if (!response.ok || !data.ok || !data.profile) throw new Error(data.message || data.error || 'Could not load profile.');
+        const p = currentProfile = data.profile;
+        const name = p.full_name || 'Smart Aroma user';
+        put('profileAvatar', name.split(/\s+/).filter(Boolean).map(part => part[0]).slice(0,2).join('').toUpperCase() || 'U');
+        put('profileDisplayName', name); put('profileFullName', name); put('profileEmail', p.email);
+        put('profileDescription', [p.department, p.study_year].filter(Boolean).join(' · ') || 'Your personal Smart Aroma wellness space');
+        put('profileDepartmentPill', p.department || 'Department not provided');
+        put('profileStudyYearPill', p.study_year || 'Year not provided');
+        put('profileLocationPill', p.location || 'Location not provided');
+        put('profilePhone', p.phone); put('profileDepartment', p.department);
+        put('profileStudyYear', p.study_year); put('profileLocation', p.location);
+        put('profileAccountBadge', 'Account #' + p.id);
+        put('profileEmotionCount', String(p.emotion_count ?? 0));
+        put('profileReflectionCount', String(p.reflection_count ?? 0));
+        renderReflections(p.reflections || []);
+      } catch (error) {
+        put('profileDisplayName', 'Profile unavailable');
+        ['profileFullName','profileEmail','profilePhone','profileDepartment','profileStudyYear','profileLocation'].forEach(id => put(id, 'Could not load'));
+        console.error('Profile load failed:', error);
+        if (typeof showToast === 'function') showToast('Profile could not load. Check the /api/profile request in Network.');
+      }
+    }
+
+    const edit = el('profileEditButton');
+    if (edit) edit.onclick = async () => {
+      if (!currentProfile) await loadAccountProfile();
+      if (!currentProfile) return;
+      const p = currentProfile;
+      const full_name = window.prompt('Edit your full name:', p.full_name || ''); if (full_name === null) return;
+      const email = window.prompt('Edit your email address:', p.email || ''); if (email === null) return;
+      const phone = window.prompt('Edit your phone number:', p.phone || ''); if (phone === null) return;
+      const department = window.prompt('Edit your department:', p.department || ''); if (department === null) return;
+      const study_year = window.prompt('Edit your study year:', p.study_year || ''); if (study_year === null) return;
+      const location = window.prompt('Edit your location:', p.location || ''); if (location === null) return;
+      try {
+        const response = await fetch('/api/profile', {
+          method:'PATCH', credentials:'same-origin',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({full_name, email, phone, department, study_year, location})
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) throw new Error(result.message || 'Profile update failed.');
+        await loadAccountProfile();
+        if (typeof showToast === 'function') showToast('Profile updated and saved to your account.');
+        else alert('Profile updated and saved to your account.');
+      } catch (error) { alert(error.message || 'Could not save profile.'); }
+    };
+
+    el('profileViewReflection')?.addEventListener('click', () => showPage('wellness'));
+    el('profileOpenSettings')?.addEventListener('click', () => showPage('settings'));
+    el('profileLogoutButton')?.addEventListener('click', async () => {
+      if (!window.confirm('Are you sure you want to log out?')) return;
+      try {
+        const response = await fetch('/logout', {method:'POST', credentials:'same-origin'});
+        if (response.redirected) window.location.href = response.url;
+        else if (response.ok) window.location.href = '/login';
+        else throw new Error('Logout failed.');
+      } catch (error) { alert(error.message || 'Could not log out.'); }
+    });
+
+    const focus = el('reflectionFocus'), thought = el('reflectionThought');
+    const saveButton = el('saveSmallReflection'), status = el('reflectionSaveStatus');
+    if (saveButton && thought) {
+      saveButton.addEventListener('click', async () => {
+        const body = {focus: focus ? focus.value : '', thought: thought.value.trim()};
+        if (!body.thought) { if (status) status.textContent = 'Write a reflection before saving.'; return; }
+        saveButton.disabled = true;
+        try {
+          const response = await fetch('/api/profile/reflections', {
+            method:'POST', credentials:'same-origin',
+            headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+          });
+          const result = await response.json();
+          if (!response.ok || !result.ok) throw new Error(result.message || result.error || 'Could not save reflection.');
+          if (status) status.textContent = 'Reflection saved to your account.';
+          await loadAccountProfile();
+        } catch (error) {
+          if (status) status.textContent = error.message || 'Could not save reflection.';
+        } finally { saveButton.disabled = false; }
+      });
+    }
+    loadAccountProfile();
+    document.querySelectorAll('[data-page="profile"]').forEach(button => button.addEventListener('click', loadAccountProfile));
+  })();
+
+</script>
+</body>
+</html>
